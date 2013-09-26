@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSV DEMO - HTML simple</title>
+</head>
+<body>
+<form id="FormBean" class="uni-form" action="/" method="POST">
+    <div id="FormBean_errors">
+
+    </div>
+
+    <div class="ctrl-holder">
+        <label for="firstname">
+            Prénom
+        </label>
+        <input id="firstname" name="firstname" type="text" value="">
+
+        <div id="firstname_error" class="error"></div>
+    </div>
+
+    <div class="ctrl-holder">
+        <label for="lastname">
+            Nom
+        </label>
+        <input id="lastname" name="lastname" type="text" value="">
+
+        <div id="lastname_error" class="error"></div>
+    </div>
+
+    <div class="ctrl-holder">
+        <label for="age">
+            Age
+        </label>
+        <input id="age" name="age" type="text" value="0">
+
+        <div id="age_error" class="error"></div>
+    </div>
+
+
+    <div class="ctrl-holder">
+        <input type="submit" value="Envoyer">
+    </div>
+</form>
+
+<script type="text/javascript" src="jsv.min.js"></script>
+<script>
+
+    var rules = [new JSValidator.Rule('lastname', 'NotEmpty', {'message': 'Le nom ne doit pas être vide'}),
+        new JSValidator.Rule('firstname', 'NotEmpty', {'message': 'Le prénom ne doit pas être vide'}),
+        new JSValidator.Rule('age', 'Min', {'message': 'Vous devez être majeur', 'value': 18})];
+
+    formBeanValidator = new JSValidator('FormBean', null, rules, {debug: true});
+
+    // bind all field validation to form submit
+    // set preventDefault to true, in case of failed rules the event will be canceled
+    formBeanValidator.bindValidationToElement("FormBean", "submit", true)
+            .bindField(formBeanValidator.getFields());
+
+    // bind age validation to keyup
+    formBeanValidator.getFieldWithName("age").bindValidationToEvent("keyup");
+</script>
+</body>
+</html>

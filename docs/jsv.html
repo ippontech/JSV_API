@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>jsv.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>jsv.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">if</span> (!Array.prototype.push) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Based on code from <a href="http://prototype.conio.net/">http://prototype.conio.net/</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	Array.prototype.push = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> startLength = <span class="keyword">this</span>.length;
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arguments.length; i++) {
+			<span class="keyword">this</span>[startLength + i] = arguments[i];
+		}
+		<span class="keyword">return</span> <span class="keyword">this</span>.length;
+	}
+}
+<span class="keyword">if</span> (!Function.prototype.apply) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Based on code from <a href="http://prototype.conio.net/">http://prototype.conio.net/</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	Function.prototype.apply = <span class="function"><span class="keyword">function</span> <span class="params">(object, parameters)</span> {</span>
+		<span class="keyword">var</span> parameterStrings = [];
+		<span class="keyword">if</span> (!object) {
+			object = window;
+		}
+		<span class="keyword">if</span> (!parameters) {
+			parameters = [];
+		}
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; parameters.length; i++) {
+			parameterStrings[i] = <span class="string">'parameters['</span> + i + <span class="string">']'</span>;
+		}
+		object.__apply__ = <span class="keyword">this</span>;
+		<span class="keyword">var</span> result = eval(<span class="string">'object.__apply__('</span> + parameterStrings.join(<span class="string">', '</span>) + <span class="string">')'</span>);
+		object.__apply__ = <span class="literal">null</span>;
+		<span class="keyword">return</span> result;
+	}
+}
+<span class="comment">/* AJAX Util */</span>
+<span class="keyword">var</span> ajax = {};
+ajax.x = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+	<span class="keyword">try</span> {
+		<span class="keyword">return</span> <span class="keyword">new</span> ActiveXObject(<span class="string">'Msxml2.XMLHTTP'</span>);
+	} <span class="keyword">catch</span> (e1) {
+		<span class="keyword">try</span> {
+			<span class="keyword">return</span> <span class="keyword">new</span> ActiveXObject(<span class="string">'Microsoft.XMLHTTP'</span>);
+		} <span class="keyword">catch</span> (e2) {
+			<span class="keyword">return</span> <span class="keyword">new</span> XMLHttpRequest();
+		}
+	}
+};
+
+ajax.send = <span class="function"><span class="keyword">function</span> <span class="params">(url, callback, method, data, sync)</span> {</span>
+	<span class="keyword">var</span> x = ajax.x();
+	x.open(method, url, sync);
+	x.onreadystatechange = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">if</span> (x.readyState == <span class="number">4</span>) {
+			callback(x.responseText);
+		}
+	};
+	<span class="keyword">if</span> (method == <span class="string">'POST'</span>) {
+		x.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);
+	}
+	x.send(data);
+};
+
+ajax.get = <span class="function"><span class="keyword">function</span> <span class="params">(url, data, callback, sync)</span> {</span>
+	<span class="keyword">var</span> query = [];
+	<span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> data) {
+		query.push(encodeURIComponent(key) + <span class="string">'='</span> + encodeURIComponent(data[key]));
+	}
+	ajax.send(url + <span class="string">'?'</span> + query.join(<span class="string">'&amp;'</span>), callback, <span class="string">'GET'</span>, <span class="literal">null</span>, sync);
+};
+
+ajax.post = <span class="function"><span class="keyword">function</span> <span class="params">(url, data, callback, sync)</span> {</span>
+	<span class="keyword">var</span> query = [];
+	<span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> data) {
+		query.push(encodeURIComponent(key) + <span class="string">'='</span> + encodeURIComponent(data[key]));
+	}
+	ajax.send(url, callback, <span class="string">'POST'</span>, query.join(<span class="string">'&amp;'</span>), sync);
+};
+
+
+
+<span class="comment">/*
+ * Core validation object.
+ */</span>
+<span class="keyword">var</span> JSValidator = <span class="function"><span class="keyword">function</span> <span class="params">(name, formObjectName, rules, config)</span> {</span>
+	<span class="keyword">this</span>.name = name;
+	<span class="keyword">this</span>.objectName = formObjectName;
+	<span class="keyword">this</span>.config = config;
+	<span class="keyword">this</span>.rules = rules;
+	<span class="keyword">this</span>.form = <span class="keyword">this</span>._findForm(name);
+};
+
+JSValidator.defaultConf = {
+	errorLocalMessageTemplate: <span class="string">"&lt;span class='{{class}}'&gt;{{message}}&lt;/span&gt;"</span>,
+	errorGlobalMessageTemplate: <span class="string">"&lt;span class='{{class}}'&gt;{{message}}&lt;/span&gt;"</span>,
+	ajaxValidateFieldURL: <span class="number">0</span>,
+	ajaxValidateFieldParams: <span class="function"><span class="keyword">function</span> <span class="params">(objectName, fieldName, fieldvalue, constaints)</span> {</span>
+		<span class="keyword">return</span> {
+			objectName: objectName,
+			fieldName: fieldName,
+			fieldValue: fieldvalue,
+			constraints: constaints
+		}
+	}
+};
+
+<span class="comment">/* Utils */</span>
+JSValidator.Utils = {
+	_bindEvent: <span class="function"><span class="keyword">function</span> <span class="params">(element, type, fn, propagation)</span> {</span>
+		<span class="keyword">if</span> (element.addEventListener) {
+			element.addEventListener(type, fn, propagation);
+		} <span class="keyword">else</span> <span class="keyword">if</span> (element.attachEvent) {
+			element.attachEvent(<span class="string">'on'</span> + type, fn);
+		}
+	},
+
+	_bindFieldToEvent: <span class="function"><span class="keyword">function</span> <span class="params">(field, type, callback, propagation)</span> {</span>
+		<span class="keyword">var</span> fn = <span class="function"><span class="keyword">function</span> <span class="params">(event)</span> {</span>
+			callback(event, field);
+		};
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; field.fieldElements.length; i++) {
+			<span class="keyword">var</span> fieldElement = field.fieldElements[i];
+			<span class="keyword">this</span>._bindEvent(fieldElement, type, fn, propagation);
+
+		}
+	},
+
+	_getAjaxableInRules: <span class="function"><span class="keyword">function</span> <span class="params">(rules)</span> {</span>
+		<span class="keyword">var</span> ajaxables = [];
+		rules.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(rule)</span> {</span>
+			<span class="keyword">if</span> (rule.params.ajaxable) {
+				ajaxables.push(rule);
+			}
+		});
+		<span class="keyword">return</span> ajaxables;
+	},
+
+	_getDefaultInRules: <span class="function"><span class="keyword">function</span> <span class="params">(rules)</span> {</span>
+		<span class="keyword">var</span> defaults = [];
+		rules.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(rule)</span> {</span>
+			<span class="keyword">if</span> (!rule.params.ajaxable) {
+				defaults.push(rule);
+			}
+		});
+		<span class="keyword">return</span> defaults;
+	},
+
+	_buildErrorLine: <span class="function"><span class="keyword">function</span> <span class="params">(field, ruleViolation, global)</span> {</span>
+		<span class="keyword">if</span> (!ruleViolation.params.message) {
+			<span class="keyword">return</span> <span class="string">""</span>;
+		}
+		<span class="keyword">var</span> error = global ? field.validator._getProp(<span class="string">"errorGlobalMessageTemplate"</span>)
+			: field.validator._getProp(<span class="string">"errorLocalMessageTemplate"</span>);
+		error = error.replace(<span class="string">"{{class}}"</span>, <span class="keyword">this</span>._buildErrorClassName(field, ruleViolation.constraint));
+		error = error.replace(<span class="string">"{{message}}"</span>, ruleViolation.params.message);
+
+		<span class="keyword">return</span> error;
+	},
+
+	_buildErrorClassName: <span class="function"><span class="keyword">function</span> <span class="params">(field, constraint)</span> {</span>
+		<span class="keyword">return</span> field.name + <span class="string">"_"</span> + constraint + <span class="string">"_error"</span>
+	},
+
+	_buildRuleViolation: <span class="function"><span class="keyword">function</span> <span class="params">(rule)</span> {</span>
+		<span class="keyword">return</span> {
+			constraint: rule.validationFunction,
+			params: JSON.parse(JSON.stringify(rule.params))
+		};
+	}
+};
+
+JSValidator.prototype = {
+	_findForm: <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> {</span>
+		<span class="keyword">var</span> element = document.getElementById(name);
+		<span class="keyword">if</span> (!element || element.tagName.toLowerCase() != <span class="string">'form'</span>) {
+			element = document.getElementById(name + <span class="string">'JSValidator'</span>);
+			<span class="keyword">if</span> (!element || element.tagName.toLowerCase() != <span class="string">'script'</span>) {
+				<span class="keyword">throw</span> <span class="string">'unable to find form with ID \''</span> + name + <span class="string">'\' or script element with ID \''</span> + name + <span class="string">'JSValidator\''</span>;
+			}
+		}
+		<span class="keyword">var</span> foundElement = element;
+		<span class="keyword">while</span> (element &amp;&amp; element.tagName.toLowerCase() != <span class="string">'form'</span>) {
+			element = element.parentNode;
+		}
+		<span class="keyword">if</span> (!element) {
+			<span class="keyword">throw</span> <span class="string">'unable to find FORM element enclosing element with ID \''</span> + foundElement.id + <span class="string">'\''</span>;
+		}
+		<span class="keyword">return</span> <span class="keyword">new</span> JSValidator.Form(element, <span class="keyword">this</span>);
+	},
+
+	getForm: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.form;
+	},
+
+	getFieldWithName: <span class="function"><span class="keyword">function</span> <span class="params">(fieldName)</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.form.getFieldWithName(fieldName);
+	},
+
+	getFields: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.form.getFields();
+	},
+
+	_getProp: <span class="function"><span class="keyword">function</span> <span class="params">(propName)</span> {</span>
+		<span class="keyword">if</span> (<span class="keyword">this</span>.config &amp;&amp; <span class="keyword">this</span>.config[propName]) {
+			<span class="keyword">return</span> <span class="keyword">this</span>.config[propName];
+		} <span class="keyword">else</span> {
+			<span class="keyword">return</span> JSValidator.defaultConf[propName];
+		}
+	}
+};
+
+<span class="comment">/*
+ * Encapsulates a HTML form
+ *
+ * Based on code from http://prototype.conio.net/
+ */</span>
+JSValidator.Form = <span class="function"><span class="keyword">function</span> <span class="params">(formElement, validator)</span> {</span>
+	<span class="keyword">this</span>.formElement = formElement;
+	<span class="keyword">this</span>.validator = validator;
+	<span class="keyword">this</span>.fields = <span class="keyword">this</span>._findFields();
+};
+JSValidator.Form.prototype = {
+	getValue: <span class="function"><span class="keyword">function</span> <span class="params">(fieldName)</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.getFieldWithName(fieldName).getValue();
+	},
+	getFieldWithName: <span class="function"><span class="keyword">function</span> <span class="params">(fieldName)</span> {</span>
+		<span class="keyword">var</span> fields = <span class="keyword">this</span>.getFields();
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; fields.length; i++) {
+			<span class="keyword">if</span> (fields[i].name == fieldName) {
+				<span class="keyword">return</span> fields[i];
+			}
+		}
+		<span class="keyword">return</span> <span class="literal">null</span>;
+	},
+	getFields: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.fields;
+	},
+	_findFields: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> fields = [];
+		<span class="keyword">var</span> tagElements = <span class="keyword">this</span>.formElement.elements;
+		<span class="keyword">var</span> inputNames = [];
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; tagElements.length; i++) {
+			<span class="keyword">if</span> (tagElements[i].tagName.toLowerCase() != <span class="string">"fieldset"</span> &amp;&amp;
+				tagElements[i].name &amp;&amp; !inputNames[tagElements[i].name]) {
+
+				inputNames[tagElements[i].name] = <span class="literal">true</span>;
+				<span class="keyword">var</span> field = <span class="keyword">new</span> JSValidator.Field(document.getElementsByName(tagElements[i].name), instance.validator);
+				<span class="keyword">if</span> (field._hasValidationRules()) {
+					fields.push(field);
+				}
+			}
+		}
+		<span class="keyword">return</span> fields;
+	},
+
+	bindValidationToSubmit: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		instance.actions = <span class="keyword">new</span> JSValidator.Form.Actions();
+
+		<span class="keyword">var</span> fields = instance.getFields();
+
+		fields.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(field)</span> {</span>
+			field.bindValidationToEvent(<span class="string">"submit"</span>);
+		}),
+
+			JSValidator.Utils._bindEvent(instance.formElement, <span class="string">"submit"</span>, <span class="function"><span class="keyword">function</span> <span class="params">(event)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Do preValidation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>				instance._doAction(event, <span class="literal">null</span>, <span class="string">"preSubmitValidationProcess"</span>);
+
+				<span class="keyword">var</span> validate = <span class="literal">true</span>;
+				instance.getFields().forEach(<span class="function"><span class="keyword">function</span> <span class="params">(field)</span> {</span>
+					field._doValidateField(event, field, <span class="function"><span class="keyword">function</span> <span class="params">(ruleViolation)</span> {</span>
+						<span class="keyword">var</span> ruleViolationsByField = [];
+
+						<span class="keyword">if</span> (ruleViolation.length &gt; <span class="number">0</span>) {
+							validate = <span class="literal">false</span>;
+							ruleViolationsByField.push({
+								field: field.name,
+								ruleViolations: ruleViolation
+							})
+						}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Do postValidation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>						instance._doAction(event, ruleViolationsByField, <span class="string">"postSubmitValidationProcess"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>if errors don&#39;t send the form</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>						<span class="keyword">if</span> (ruleViolationsByField.length &gt; <span class="number">0</span>) {
+							event.preventDefault();
+						}
+					});
+				});
+			}, <span class="literal">false</span>);
+
+		<span class="keyword">return</span> instance.actions;
+	},
+
+	_doAction: <span class="function"><span class="keyword">function</span> <span class="params">(event, ruleViolations, actionFnName)</span> {</span>
+		<span class="keyword">if</span> (<span class="keyword">this</span>.actions[actionFnName]) {
+			<span class="keyword">this</span>.actions[actionFnName](event, ruleViolations);
+		}
+	},
+
+	_addGlobalProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn, actionsFnName)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> fields = instance.getFields();
+
+		<span class="keyword">var</span> newGlobalActions = <span class="keyword">new</span> JSValidator.Field.Actions();
+		newGlobalActions[actionsFnName](fn);
+
+		fields.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(field)</span> {</span>
+			<span class="keyword">var</span> globalActions = field._getActionsForEventType(<span class="string">"all"</span>);
+			<span class="keyword">if</span> (globalActions) {
+				globalActions[actionsFnName](fn);
+			} <span class="keyword">else</span> {
+				field._addActionsToEventType(<span class="string">"all"</span>, newGlobalActions);
+			}
+		});
+	},
+
+	addFieldsPreValidationProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>._addGlobalProcess(fn, <span class="string">"addPreValidationProcess"</span>);
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+
+	addFieldsPostValidationBeforeMessageProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>._addGlobalProcess(fn, <span class="string">"addPostValidationBeforeMessageProcess"</span>);
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+
+	addFieldsPostValidationAfterMessageProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>._addGlobalProcess(fn, <span class="string">"addPostValidationAfterMessageProcess"</span>);
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	}
+};
+
+<span class="comment">/* Actions for Form API */</span>
+JSValidator.Form.Actions = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>};
+
+JSValidator.Form.Actions.prototype = {
+	addPreSubmitValidationProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>.preSubmitValidationProcess = fn;
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+	addPostSubmitValidationProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>.postSubmitValidationProcess = fn;
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	}
+};
+
+<span class="comment">/*
+ * Encapsulates a HTML form field
+ *
+ * Based on code from http://prototype.conio.net/
+ */</span>
+JSValidator.Field = <span class="function"><span class="keyword">function</span> <span class="params">(fieldElements, validator)</span> {</span>
+	<span class="keyword">this</span>.validator = validator;
+	<span class="keyword">this</span>.name = fieldElements[<span class="number">0</span>].name;
+	<span class="keyword">this</span>.tagName = fieldElements[<span class="number">0</span>].tagName.toLowerCase();
+	<span class="keyword">this</span>.type = fieldElements[<span class="number">0</span>].type.toLowerCase();
+	<span class="keyword">this</span>.fieldElements = fieldElements;
+	<span class="keyword">this</span>.actions = [];
+
+	<span class="keyword">if</span> (JSValidator.Field.ValueGetters[<span class="keyword">this</span>.tagName]) {
+		<span class="keyword">this</span>.getValue = JSValidator.Field.ValueGetters[<span class="keyword">this</span>.tagName];
+	} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.tagName == <span class="string">'input'</span>) {
+		<span class="keyword">switch</span> (<span class="keyword">this</span>.type) {
+			<span class="keyword">case</span> <span class="string">'submit'</span>:
+			<span class="keyword">case</span> <span class="string">'hidden'</span>:
+			<span class="keyword">case</span> <span class="string">'password'</span>:
+			<span class="keyword">case</span> <span class="string">'text'</span>:
+				<span class="keyword">this</span>.getValue = JSValidator.Field.ValueGetters[<span class="string">'textarea'</span>];
+				<span class="keyword">break</span>
+			<span class="keyword">case</span> <span class="string">'checkbox'</span>:
+				<span class="keyword">this</span>.getValue = JSValidator.Field.ValueGetters[<span class="string">'checkbox'</span>];
+				<span class="keyword">break</span>
+			<span class="keyword">case</span> <span class="string">'radio'</span>:
+				<span class="keyword">this</span>.getValue = JSValidator.Field.ValueGetters[<span class="string">'radio'</span>];
+				<span class="keyword">break</span>
+			<span class="keyword">default</span>:
+				<span class="keyword">throw</span> <span class="string">'unexpected input field type \''</span> + <span class="keyword">this</span>.type + <span class="string">'\''</span>;
+		}
+	} <span class="keyword">else</span> {
+		<span class="keyword">throw</span> <span class="string">'unexpected form field tag name \''</span> + <span class="keyword">this</span>.tagName + <span class="string">'\''</span>;
+	}
+};
+
+JSValidator.Field.prototype = {
+	bindValidationToEvent: <span class="function"><span class="keyword">function</span> <span class="params">(type)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> actions = <span class="keyword">new</span> JSValidator.Field.Actions();
+		<span class="keyword">var</span> atype = <span class="number">0</span>;
+		type.trim().split(<span class="string">","</span>).forEach(<span class="function"><span class="keyword">function</span> <span class="params">(theType)</span> {</span>
+			atype = theType;
+			instance._addActionsToEventType(theType, actions);
+			JSValidator.Utils._bindFieldToEvent(instance, theType, instance._initFieldValidation, <span class="literal">false</span>);
+		});
+		<span class="keyword">if</span> (atype) {
+			<span class="keyword">return</span> instance._getActionsForEventType(atype);
+		}
+	},
+
+	_executeConditions: <span class="function"><span class="keyword">function</span> <span class="params">(event)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">try</span> {
+			<span class="keyword">if</span> (instance._getActionsForEvent(event).conditions.length &gt; <span class="number">0</span>) {
+				console.log(<span class="string">"Execute validation conditions"</span>);
+				instance._getActionsForEvent(event).conditions.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(condition)</span> {</span>
+					<span class="keyword">if</span> (!condition(instance)) {
+						<span class="keyword">throw</span> <span class="string">"conditionFailed"</span>;
+					}
+				});
+			}
+		} <span class="keyword">catch</span> (err) {
+			<span class="keyword">if</span> (err == <span class="string">"conditionFailed"</span>) {
+				console.log(<span class="string">"Conditions failed"</span>);
+				<span class="keyword">return</span> <span class="literal">false</span>;
+			}
+		}
+		<span class="keyword">return</span> <span class="literal">true</span>;
+	},
+
+	_getFieldRules: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> rules = [];
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; instance.validator.rules.length; i++) {
+			<span class="keyword">if</span> (instance.validator.rules[i].field == instance.name) {
+				<span class="keyword">var</span> rule = instance.validator.rules[i];
+				rule.form = instance.validator.form;
+				rules.push(rule);
+			}
+		}
+		<span class="keyword">return</span> rules;
+	},
+
+	_hasValidationRules: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>._getFieldRules().length &gt; <span class="number">0</span>;
+	},
+
+	_doValidateRules: <span class="function"><span class="keyword">function</span> <span class="params">(callback)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> rules = <span class="keyword">this</span>._getFieldRules();
+		<span class="keyword">if</span> (rules.length &gt; <span class="number">0</span>) {
+			instance._validateRules(rules, callback);
+		} <span class="keyword">else</span> {
+			console.log(<span class="string">'Unable to find validation rules for field "'</span> + instance.name + <span class="string">'"'</span>);
+		}
+	},
+
+	_validateRules: <span class="function"><span class="keyword">function</span> <span class="params">(rules, validationCallBack)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> ruleViolations = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Validate default rules</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">var</span> defaultRules = JSValidator.Utils._getDefaultInRules(rules);
+		defaultRules.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(defaultRule)</span> {</span>
+			console.log(<span class="string">'Validating rule ['</span> + defaultRule.validationFunction + <span class="string">'] '</span> +
+				<span class="string">'for field ['</span> + defaultRule.field + <span class="string">']'</span>);
+
+			<span class="keyword">if</span> (!defaultRule.validate(<span class="keyword">this</span>)) {
+				console.log(<span class="string">'Failed'</span>);
+				ruleViolations.push(JSValidator.Utils._buildRuleViolation(defaultRule));
+			} <span class="keyword">else</span> {
+				console.log(<span class="string">'Passed'</span>);
+			}
+		});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Validate ajax rules</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">var</span> ajaxServiceURL = instance.validator._getProp(<span class="string">"ajaxValidateFieldURL"</span>);
+		<span class="keyword">var</span> ajaxRules = JSValidator.Utils._getAjaxableInRules(rules);
+		<span class="keyword">if</span> (ajaxServiceURL &amp;&amp; ajaxRules.length &gt; <span class="number">0</span>) {
+			<span class="keyword">var</span> constraints = [];
+			ajaxRules.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(ajaxRule)</span> {</span>
+				constraints.push(ajaxRule.validationFunction);
+			});
+
+			<span class="keyword">var</span> data = instance.validator._getProp(<span class="string">"ajaxValidateFieldParams"</span>)(
+				instance.validator.objectName
+				, ajaxRules[<span class="number">0</span>].field
+				, instance.getValue()
+				, constraints.join(<span class="string">","</span>));
+
+			console.log(<span class="string">'AJAX Validating rules '</span> +
+				<span class="string">'for field ['</span> + ajaxRules[<span class="number">0</span>].field + <span class="string">']'</span>);
+			ajax.post(ajaxServiceURL, data, <span class="function"><span class="keyword">function</span> <span class="params">(data)</span> {</span>
+				<span class="keyword">if</span> (data) {
+					ruleViolations = ruleViolations.concat(JSON.parse(data));
+					<span class="keyword">if</span> (ruleViolations.length &gt; <span class="number">0</span>) {
+						console.log(<span class="string">'Failed'</span>);
+					} <span class="keyword">else</span> {
+						console.log(<span class="string">'Passed'</span>);
+					}
+				}
+
+				<span class="keyword">if</span> (validationCallBack) {
+					validationCallBack(ruleViolations);
+				}
+			})
+		} <span class="keyword">else</span> <span class="keyword">if</span> (!ajaxServiceURL &amp;&amp; ajaxRules.length &gt; <span class="number">0</span>) {
+			console.log(<span class="string">'Unable to validates rules in AJAX, '</span> +
+				<span class="string">'no service URL provide in validator config'</span>);
+		} <span class="keyword">else</span> {
+			<span class="keyword">if</span> (validationCallBack) {
+				validationCallBack(ruleViolations);
+			}
+		}
+	},
+
+	_initFieldValidation: <span class="function"><span class="keyword">function</span> <span class="params">(event, field)</span> {</span>
+		<span class="keyword">if</span> (field._getActionsForEvent(event).validationTimeoutDelay
+			&amp;&amp; !isNaN(field._getActionsForEvent(event).validationTimeoutDelay)) {
+
+			clearInterval(field._getActionsForEvent(event).validationTimeout);
+			field._getActionsForEvent(event).validationTimeout =
+				setTimeout(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+						field._doValidateField(event, field);
+					},
+					field._getActionsForEvent(event).validationTimeoutDelay);
+
+		} <span class="keyword">else</span> {
+			field._doValidateField(event, field);
+		}
+	},
+
+	_doAction: <span class="function"><span class="keyword">function</span> <span class="params">(event, field, ruleViolations, actionFnName)</span> {</span>
+		<span class="keyword">var</span> globalAction = field._getActionsForEventType(<span class="string">"all"</span>);
+
+		<span class="keyword">if</span> (globalAction &amp;&amp; globalAction[actionFnName]) {
+			globalAction[actionFnName](event, field, ruleViolations);
+		}
+
+		<span class="keyword">if</span> (field._getActionsForEvent(event)[actionFnName]) {
+			field._getActionsForEvent(event)[actionFnName](event, field, ruleViolations);
+		}
+	},
+
+	_doValidateField: <span class="function"><span class="keyword">function</span> <span class="params">(event, field, callback)</span> {</span>
+		console.log(<span class="string">"Start validating field:"</span> + field.name);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Do conditions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">if</span> (!field._hasValidationRules() || !field._executeConditions(event)) {
+			<span class="keyword">return</span> <span class="literal">true</span>;
+		}
+
+		field._doAction(event, field, <span class="literal">null</span>, <span class="string">"preValidationProcess"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Do validation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		field._doValidateRules(<span class="function"><span class="keyword">function</span> <span class="params">(ruleViolations)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Post validation process</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			field._doAction(event, field, ruleViolations,
+				<span class="string">"postValidationProcessBeforeMessage"</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Display error messages</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			field._updateErrorMessages(ruleViolations);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Post validation process</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			field._doAction(event, field, ruleViolations, <span class="string">"postValidationProcessAfterMessage"</span>);
+
+			<span class="keyword">if</span> (callback) {
+				callback(ruleViolations);
+			}
+		});
+	},
+
+	_updateErrorMessages: <span class="function"><span class="keyword">function</span> <span class="params">(ruleViolations)</span> {</span>
+		<span class="keyword">this</span>._updateLocalErrorMessages(ruleViolations);
+		<span class="keyword">this</span>._updateGlobalErrorMessages(ruleViolations);
+	},
+
+	_updateGlobalErrorMessages: <span class="function"><span class="keyword">function</span> <span class="params">(ruleViolations)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> errorContainer = document.getElementById(instance.validator.form.formElement.getAttribute(<span class="string">"id"</span>)
+			+ <span class="string">"_errors"</span>);
+		<span class="keyword">if</span> (errorContainer) {
+			<span class="keyword">var</span> newErrorContainer = errorContainer.cloneNode(<span class="literal">true</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Clean errors related to this field in global container</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="keyword">var</span> fieldRules = instance._getFieldRules();
+			fieldRules.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(rule)</span> {</span>
+				<span class="keyword">var</span> errorLineToDelete = newErrorContainer.getElementsByClassName(
+					JSValidator.Utils._buildErrorClassName(instance, rule.validationFunction))
+				<span class="keyword">if</span> (errorLineToDelete.length &gt; <span class="number">0</span>) {
+					newErrorContainer.removeChild(errorLineToDelete[<span class="number">0</span>]);
+				}
+			});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Add errors related to this field</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			ruleViolations.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(ruleViolation)</span> {</span>
+				newErrorContainer.innerHTML += JSValidator.Utils._buildErrorLine(instance, ruleViolation, <span class="literal">true</span>);
+			});
+
+			errorContainer.parentNode.replaceChild(newErrorContainer, errorContainer);
+		}
+	},
+
+	_updateLocalErrorMessages: <span class="function"><span class="keyword">function</span> <span class="params">(ruleViolations)</span> {</span>
+		<span class="keyword">var</span> instance = <span class="keyword">this</span>;
+		<span class="keyword">var</span> errorContainer = document.getElementById(instance.name + <span class="string">"_error"</span>);
+		<span class="keyword">if</span> (errorContainer) {
+			<span class="keyword">var</span> newErrorContainer = errorContainer.cloneNode(<span class="literal">false</span>);
+			ruleViolations.forEach(<span class="function"><span class="keyword">function</span> <span class="params">(ruleViolation)</span> {</span>
+				newErrorContainer.innerHTML += JSValidator.Utils._buildErrorLine(instance, ruleViolation, <span class="literal">false</span>);
+			});
+
+			errorContainer.parentNode.replaceChild(newErrorContainer, errorContainer);
+		}
+	},
+
+	_addActionsToEventType: <span class="function"><span class="keyword">function</span> <span class="params">(type, actions)</span> {</span>
+		<span class="keyword">this</span>.actions[type] = actions;
+	},
+	_getActionsForEvent: <span class="function"><span class="keyword">function</span> <span class="params">(event)</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>._getActionsForEventType(event.type)
+	},
+	_getActionsForEventType: <span class="function"><span class="keyword">function</span> <span class="params">(eventType)</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.actions[eventType];
+	}
+};
+
+<span class="comment">/* Actions on Field API */</span>
+JSValidator.Field.Actions = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+};
+
+JSValidator.Field.Actions.prototype = {
+	addValidationCondition: <span class="function"><span class="keyword">function</span> <span class="params">(condition)</span> {</span>
+		<span class="keyword">if</span> (!<span class="keyword">this</span>.conditions) {
+			<span class="keyword">this</span>.conditions = [];
+		}
+		<span class="keyword">this</span>.conditions.push(condition);
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+
+	addPreValidationProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>.preValidationProcess = fn;
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+
+	addPostValidationBeforeMessageProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>.postValidationProcessBeforeMessage = fn;
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+
+	addPostValidationAfterMessageProcess: <span class="function"><span class="keyword">function</span> <span class="params">(fn)</span> {</span>
+		<span class="keyword">this</span>.postValidationProcessAfterMessage = fn;
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	},
+
+	setValidationDelay: <span class="function"><span class="keyword">function</span> <span class="params">(delay)</span> {</span>
+		<span class="keyword">this</span>.validationTimeoutDelay = delay;
+		<span class="keyword">return</span> <span class="keyword">this</span>;
+	}
+}
+
+JSValidator.Field.ValueGetters = {
+	radio: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> value = <span class="literal">null</span>;
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.fieldElements.length; i++) {
+			<span class="keyword">if</span> (<span class="keyword">this</span>.fieldElements[i].checked) {
+				value = <span class="keyword">this</span>.fieldElements[i].value;
+			}
+		}
+		<span class="keyword">return</span> value;
+	},
+	checkbox: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> value = [];
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.fieldElements.length; i++) {
+			<span class="keyword">if</span> (<span class="keyword">this</span>.fieldElements[i].checked) {
+				value.push(<span class="keyword">this</span>.fieldElements[i].value);
+			}
+		}
+		<span class="keyword">return</span> value;
+	},
+	textarea: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">if</span> (<span class="keyword">this</span>.fieldElements.length == <span class="number">1</span>) {
+			<span class="keyword">return</span> <span class="keyword">this</span>.fieldElements[<span class="number">0</span>].value;
+		} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.fieldElements.length &gt; <span class="number">1</span>) {
+			<span class="keyword">var</span> arrayValue = [];
+			<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.fieldElements.length; i++) {
+				<span class="keyword">var</span> fieldElement = <span class="keyword">this</span>.fieldElements[i];
+				arrayValue.push(fieldElement.value);
+			}
+			<span class="keyword">return</span> arrayValue;
+		}
+		<span class="keyword">return</span> <span class="literal">null</span>
+	},
+	select: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">var</span> value = <span class="literal">null</span>;
+		<span class="keyword">if</span> (<span class="keyword">this</span>.fieldElements[<span class="number">0</span>].type == <span class="string">'select-one'</span>) {
+			value = <span class="keyword">this</span>.fieldElements[<span class="number">0</span>].value;
+		} <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.fieldElements[<span class="number">0</span>].type == <span class="string">'select-multiple'</span>) {
+			value = [];
+			<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.fieldElements[<span class="number">0</span>].options.length; i++) {
+				<span class="keyword">var</span> option = <span class="keyword">this</span>.fieldElements[<span class="number">0</span>].options[i];
+				<span class="keyword">if</span> (option.selected) {
+					value.push(option.value)
+				}
+			}
+		}
+		<span class="keyword">return</span> value
+	}
+};
+
+<span class="comment">/*
+ * Represents a single JSR-303 validation constraint and the functions needed
+ * to evaluate that constraint.
+ */</span>
+JSValidator.Rule = <span class="function"><span class="keyword">function</span> <span class="params">(field, validationFunction, params)</span> {</span>
+	<span class="keyword">this</span>.field = field;
+	<span class="keyword">this</span>.params = params;
+	<span class="keyword">this</span>.validationFunction = validationFunction;
+}
+JSValidator.Rule.prototype = {
+	validate: <span class="function"><span class="keyword">function</span> <span class="params">(validator)</span> {</span>
+		<span class="keyword">var</span> f = <span class="keyword">this</span>[<span class="keyword">this</span>.validationFunction];
+		<span class="keyword">if</span> (!f || <span class="keyword">typeof</span> f != <span class="string">'function'</span>) {
+			<span class="keyword">return</span> <span class="literal">true</span>;
+		}
+		<span class="keyword">return</span> f(<span class="keyword">this</span>.getPropertyValue(<span class="keyword">this</span>.field), <span class="keyword">this</span>.params, <span class="keyword">this</span>.field, validator.config);
+	},
+	getErrorMessage: <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+		<span class="keyword">return</span> (<span class="keyword">this</span>.params.message || <span class="string">'Invalid value for '</span> + <span class="keyword">this</span>.field);
+	},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Property Accessor</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	getPropertyValue: <span class="function"><span class="keyword">function</span> <span class="params">(propertyName, expectedType)</span> {</span>
+		<span class="keyword">return</span> <span class="keyword">this</span>.form.getValue(propertyName)
+	},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Assertions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	_assertHasLength: <span class="function"><span class="keyword">function</span> <span class="params">(value)</span> {</span>
+		<span class="keyword">if</span> (!value.length) {
+			<span class="keyword">throw</span> <span class="string">'value \''</span> + value + <span class="string">'\' does not have length'</span>
+		}
+	},
+	_assertLength: <span class="function"><span class="keyword">function</span> <span class="params">(value, length)</span> {</span>
+		<span class="keyword">this</span>._assertHasLength(value)
+		<span class="keyword">if</span> (value.length != length) {
+			<span class="keyword">throw</span> <span class="string">'value\'s length != \''</span> + length + <span class="string">'\''</span>
+		}
+	},
+	_throwError: <span class="function"><span class="keyword">function</span> <span class="params">(msg)</span> {</span>
+		<span class="keyword">throw</span> msg
+	},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Type safety checks</p>
+<p>This function tries to convert the lhs into a type
+that are compatible with the rhs for the various
+JS compare operations. When there is a choice between
+converting to a string or a number; number is always
+favoured.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	_makeCompatible: <span class="function"><span class="keyword">function</span> <span class="params">(lhs, rhs)</span> {</span>
+		<span class="keyword">try</span> {
+			<span class="keyword">this</span>._forceNumber(rhs)
+			<span class="keyword">return</span> <span class="keyword">this</span>._forceNumber(lhs)
+		} <span class="keyword">catch</span> (ex) {
+		}
+		<span class="keyword">var</span> lhsType = <span class="keyword">typeof</span> lhs
+		<span class="keyword">var</span> rhsType = <span class="keyword">typeof</span> rhs
+		<span class="keyword">if</span> (lhsType == rhsType) {
+			<span class="keyword">return</span> lhs
+		} <span class="keyword">else</span> <span class="keyword">if</span> (lhsType == <span class="string">'number'</span> || rhsType == <span class="string">'number'</span>) {
+			<span class="keyword">return</span> <span class="keyword">this</span>._forceNumber(lhs)
+		} <span class="keyword">else</span> {
+			<span class="keyword">throw</span> <span class="string">'unable to convert ['</span> + lhs + <span class="string">'] and ['</span> + rhs + <span class="string">'] to compatible types'</span>
+		}
+	},
+	_forceNumber: <span class="function"><span class="keyword">function</span> <span class="params">(value)</span> {</span>
+		<span class="keyword">if</span> (<span class="keyword">typeof</span> value != <span class="string">'number'</span>) {
+			<span class="keyword">try</span> {
+				<span class="keyword">var</span> newValue = eval(value.toString())
+			} <span class="keyword">catch</span> (ex) {
+			}
+			<span class="keyword">if</span> (newValue &amp;&amp; <span class="keyword">typeof</span> newValue == <span class="string">'number'</span>) {
+				<span class="keyword">return</span> newValue
+			}
+			<span class="keyword">throw</span> <span class="string">'unable to convert value ['</span> + value + <span class="string">'] to number'</span>
+		}
+		<span class="keyword">return</span> value
+	},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>JSR-303 validations</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	AssertFalse: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">return</span> (value == <span class="string">'false'</span>);
+	},
+	AssertTrue: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">return</span> (value == <span class="string">'true'</span>);
+	},
+	DecimalMax: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueNumber = <span class="keyword">new</span> Number(value).valueOf();
+			<span class="keyword">if</span> (isNaN(valueNumber)) {
+				valid = <span class="literal">false</span>;
+			} <span class="keyword">else</span> {
+				valid = valueNumber &lt;= <span class="keyword">new</span> Number(params.value).valueOf();
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	DecimalMin: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueNumber = <span class="keyword">new</span> Number(value).valueOf();
+			<span class="keyword">if</span> (isNaN(valueNumber)) {
+				valid = <span class="literal">false</span>;
+			} <span class="keyword">else</span> {
+				valid = valueNumber &gt;= <span class="keyword">new</span> Number(params.value).valueOf();
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	Digits: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueNumber = <span class="keyword">new</span> Number(value).valueOf();
+			<span class="keyword">if</span> (isNaN(valueNumber)) {
+				valid = <span class="literal">false</span>;
+			} <span class="keyword">else</span> {
+				<span class="keyword">var</span> valueNumberString = valueNumber.toString();
+				<span class="keyword">var</span> numberParts = valueNumberString.split(<span class="string">'.'</span>);
+				<span class="keyword">if</span> (params.integer &amp;&amp; numberParts[<span class="number">0</span>].length &gt; params.integer) {
+					valid = <span class="literal">false</span>;
+				}
+				<span class="keyword">if</span> (valid &amp;&amp; params.fraction &amp;&amp; numberParts.length &gt; <span class="number">1</span> &amp;&amp; numberParts[<span class="number">1</span>].length &gt; params.fraction) {
+					valid = <span class="literal">false</span>;
+				}
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	Max: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueNumber = <span class="keyword">new</span> Number(value).valueOf();
+			<span class="keyword">if</span> (isNaN(valueNumber)) {
+				valid = <span class="literal">false</span>;
+			} <span class="keyword">else</span> {
+				valid = valueNumber &lt;= <span class="keyword">new</span> Number(params.value).valueOf();
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	Min: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueNumber = <span class="keyword">new</span> Number(value).valueOf();
+			<span class="keyword">if</span> (isNaN(valueNumber)) {
+				valid = <span class="literal">false</span>;
+			} <span class="keyword">else</span> {
+				valid = valueNumber &gt;= <span class="keyword">new</span> Number(params.value).valueOf();
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	NotNull: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">return</span> (value &amp;&amp; value.toString().length &gt; <span class="number">0</span>);
+	},
+	Null: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">return</span> (!value || value.toString().length == <span class="number">0</span>);
+	},
+	Pattern: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> caseInsensitive = <span class="literal">false</span>;
+			<span class="keyword">if</span> (params.flag &amp;&amp; params.flag.length &gt; <span class="number">0</span>) {
+				<span class="keyword">for</span> (<span class="keyword">var</span> flagIndex = <span class="number">0</span>; flagIndex &lt; params.flag.length; flagIndex++) {
+					<span class="keyword">if</span> (params.flag[flagIndex] == <span class="string">'CASE_INSENSITIVE'</span>) {
+						caseInsensitive = <span class="literal">true</span>;
+						<span class="keyword">break</span>;
+					}
+				}
+			}
+			<span class="keyword">var</span> regularExpression = caseInsensitive ? <span class="keyword">new</span> RegExp(params.regexp, <span class="string">'i'</span>) : <span class="keyword">new</span> RegExp(params.regexp);
+			valid = value.search(regularExpression) &gt; -<span class="number">1</span>;
+		}
+		<span class="keyword">return</span> valid;
+	},
+	Size: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueLength = value.length;
+			<span class="keyword">if</span> (params.min &amp;&amp; valueLength &lt; params.min) {
+				valid = <span class="literal">false</span>;
+			}
+			<span class="keyword">if</span> (valid &amp;&amp; params.max &amp;&amp; valueLength &gt; params.max) {
+				valid = <span class="literal">false</span>;
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	Future: <span class="function"><span class="keyword">function</span> <span class="params">(value, params, fieldName, config)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> dateFormat = (config[fieldName] &amp;&amp; config[fieldName].dateFormat ? config[fieldName].dateFormat : JSValidator.DateParser.defaultFormat);
+			<span class="keyword">try</span> {
+				<span class="keyword">var</span> dateValue = JSValidator.DateParser.parseDate(dateFormat, value);
+				valid = dateValue &amp;&amp; dateValue.getTime() &gt; <span class="keyword">new</span> Date().getTime();
+			} <span class="keyword">catch</span> (e) {
+				console.log(e);
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	Past: <span class="function"><span class="keyword">function</span> <span class="params">(value, params, fieldName, config)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> dateFormat = (config[fieldName] &amp;&amp; config[fieldName].dateFormat ? config[fieldName].dateFormat : JSValidator.DateParser.defaultFormat);
+			<span class="keyword">try</span> {
+				<span class="keyword">var</span> dateValue = JSValidator.DateParser.parseDate(dateFormat, value);
+				valid = dateValue &amp;&amp; dateValue.getTime() &lt; <span class="keyword">new</span> Date().getTime();
+			} <span class="keyword">catch</span> (e) {
+				console.log(e);
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Hibernate Validator validations</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	Email: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">return</span> (!value || value.search(JSValidator.Rule.emailPattern) &gt; -<span class="number">1</span>);
+	},
+	Length: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueLength = value.toString().length;
+			<span class="keyword">if</span> (params.min &amp;&amp; valueLength &lt; params.min) {
+				valid = <span class="literal">false</span>;
+			}
+			<span class="keyword">if</span> (valid &amp;&amp; params.max &amp;&amp; valueLength &gt; params.max) {
+				valid = <span class="literal">false</span>;
+			}
+		}
+		<span class="keyword">return</span> valid;
+	},
+	NotEmpty: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">return</span> (value &amp;&amp; value.toString().search(<span class="regexp">/\w+/</span>) &gt; -<span class="number">1</span>);
+	},
+	Range: <span class="function"><span class="keyword">function</span> <span class="params">(value, params)</span> {</span>
+		<span class="keyword">var</span> valid = <span class="literal">true</span>;
+		<span class="keyword">if</span> (value) {
+			<span class="keyword">var</span> valueNumber = <span class="keyword">new</span> Number(value).valueOf();
+			<span class="keyword">if</span> (isNaN(valueNumber)) {
+				valid = <span class="literal">false</span>;
+			} <span class="keyword">else</span> {
+				<span class="keyword">if</span> (params.min &amp;&amp; valueNumber &lt; params.min) {
+					valid = <span class="literal">false</span>;
+				}
+				<span class="keyword">if</span> (valid &amp;&amp; params.max &amp;&amp; valueNumber &gt; params.max) {
+					valid = <span class="literal">false</span>;
+				}
+			}
+		}
+		<span class="keyword">return</span> valid;
+	}
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>email validation regular expressions, from Hibernate Validator EmailValidator</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>JSValidator.Rule.emailPatternAtom = <span class="string">'[^\x00-\x1F^\\(^\\)^\\&lt;^\\&gt;^\\@^\\,^\\;^\\:^\\^\"^\\.^\\[^\\]^\\s]'</span>;
+JSValidator.Rule.emailPatternDomain = JSValidator.Rule.emailPatternAtom + <span class="string">'+(\\.'</span> + JSValidator.Rule.emailPatternAtom + <span class="string">'+)*'</span>;
+JSValidator.Rule.emailPatternIPDomain = <span class="string">'\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\]'</span>;
+JSValidator.Rule.emailPattern = <span class="keyword">new</span> RegExp(
+	<span class="string">"^"</span> + JSValidator.Rule.emailPatternAtom + <span class="string">"+(\\."</span> + JSValidator.Rule.emailPatternAtom + <span class="string">"+)*@("</span>
+		+ JSValidator.Rule.emailPatternDomain
+		+ <span class="string">"|"</span>
+		+ JSValidator.Rule.emailPatternIPDomain
+		+ <span class="string">")$"</span>, <span class="string">'i'</span>);
+<span class="comment">/**
+ * Very simple Date parsing utility, for @Future/@Past validation.
+ * Provide a date format in the tag body in a JSON object, keyed on
+ * field name, e.g.:
+ *
+ * { fieldName : { dateFormat : 'y/M/d' } }
+ *
+ * Only supports numerical values for days and months. At most one
+ * occurrence of each character is allowed (e.g. 'y' but not 'yy'
+ * or 'yyyy' or 'y   y').
+ *
+ * The 'y' year format character is required, other characters are
+ * optional, and dates parsed will get default values for fields not
+ * represented in the format string.
+ *
+ * If fewer than four numbers are used for the year then the year
+ * will be set according to the browser defaults.
+ */</span>
+JSValidator.DateParser = {
+	defaultFormat: <span class="string">'M/d/y'</span>,
+	formatChars: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>this order avoids errors with regex replace calls later on</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="string">'d'</span>: { regexp: <span class="string">'\\d{1,2}'</span> }, <span class="comment">// day of month</span>
+		<span class="string">'m'</span>: { regexp: <span class="string">'\\d{1,2}'</span> }, <span class="comment">// minute of hour</span>
+		<span class="string">'M'</span>: { regexp: <span class="string">'\\d{1,2}'</span> }, <span class="comment">// month of year</span>
+		<span class="string">'a'</span>: { regexp: <span class="string">'[aApP][mM]+'</span> }, <span class="comment">// AM/PM, required for 12-hour time</span>
+		<span class="string">'y'</span>: { regexp: <span class="string">'\\d{1,4}'</span> }, <span class="comment">// year, required</span>
+		<span class="string">'h'</span>: { regexp: <span class="string">'\\d{1,2}'</span> }, <span class="comment">// 12-hour hour, requires 'a'</span>
+		<span class="string">'H'</span>: { regexp: <span class="string">'\\d{1,2}'</span> }, <span class="comment">// 24-hour hour, cannot be used with 'a'</span>
+		<span class="string">'s'</span>: { regexp: <span class="string">'\\d{1,2}'</span> } <span class="comment">// second of minute</span>
+	},
+	parseDate: <span class="function"><span class="keyword">function</span> <span class="params">(dateFormat, dateValue)</span> {</span>
+		<span class="keyword">var</span> parsedDate = <span class="literal">null</span>;
+		<span class="keyword">if</span> (!dateFormat || dateFormat.search(<span class="regexp">/\w/</span>) &lt; <span class="number">0</span>) {
+			<span class="keyword">throw</span>(<span class="string">'date format must not be blank'</span>);
+		}
+		<span class="keyword">if</span> (dateFormat.search(<span class="regexp">/y/</span>) &lt; <span class="number">0</span>) {
+			<span class="keyword">throw</span>(<span class="string">'date format must at least contain year character ("y")'</span>);
+		}
+		<span class="keyword">if</span> (dateFormat.indexOf(<span class="string">'h'</span>) &gt; -<span class="number">1</span> &amp;&amp; dateFormat.indexOf(<span class="string">'a'</span>) &lt; <span class="number">0</span>) {
+			<span class="keyword">throw</span>(<span class="string">'date format must contain AM/PM ("a") if using 12-hour hours ("h")'</span>);
+		}
+		<span class="keyword">if</span> (dateFormat.indexOf(<span class="string">'H'</span>) &gt; -<span class="number">1</span> &amp;&amp; dateFormat.indexOf(<span class="string">'a'</span>) &gt; -<span class="number">1</span>) {
+			<span class="keyword">throw</span>(<span class="string">'date format must not contain AM/PM ("a") if using 24-hour hours ("H")'</span>);
+		}
+		<span class="keyword">if</span> (!dateValue || dateValue.search(<span class="regexp">/\w/</span>) &lt; <span class="number">0</span>) {
+			<span class="keyword">throw</span>(<span class="string">'date value must not be blank'</span>);
+		}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>create map of date piece name to index of capturing group</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">var</span> formatChar;
+		<span class="keyword">var</span> partOrderMap = {};
+		<span class="keyword">var</span> partOrder = <span class="number">1</span>;
+		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; dateFormat.length; i++) {
+			<span class="keyword">var</span> userFormatChar = dateFormat.charAt(i);
+			<span class="keyword">for</span> (formatChar <span class="keyword">in</span> <span class="keyword">this</span>.formatChars) {
+				<span class="keyword">if</span> (userFormatChar == formatChar) {
+					<span class="keyword">if</span> (partOrderMap[formatChar]) {
+						<span class="keyword">throw</span>(<span class="string">'date format must not contain more than one of the same format character'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <pre><code>         } else if ((userFormatChar == &#39;h&#39; &amp;&amp; partOrderMap[&#39;H&#39;]) || (userFormatChar == &#39;H&#39; &amp;&amp; partOrderMap[&#39;h&#39;])) {
+           alert(&#39;date format must contain either \&#39;h\&#39; or \&#39;H\&#39;, but not both&#39;);</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>					}
+					partOrderMap[formatChar] = partOrder++;
+				}
+			}
+		}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>create regexp from date format</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">var</span> dateRegExp = dateFormat;
+		<span class="keyword">for</span> (formatChar <span class="keyword">in</span> <span class="keyword">this</span>.formatChars) {
+			dateRegExp = dateRegExp.replace(formatChar, <span class="string">'('</span> + <span class="keyword">this</span>.formatChars[formatChar].regexp + <span class="string">')'</span>);
+		}
+		dateRegExp = <span class="keyword">new</span> RegExp(dateRegExp);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>run regexp</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">var</span> matches = dateValue.match(dateRegExp);
+
+		<span class="keyword">if</span> (!matches) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <pre><code> throw(&#39;date value does not match date format&#39;);</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="keyword">return</span> <span class="literal">null</span>;
+		}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>create date pulling values from match array using map of piece name to capturing group indexes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="keyword">var</span> yearValue = Math.max(<span class="number">0</span>, matches[partOrderMap[<span class="string">'y'</span>]] || <span class="number">0</span>);
+		<span class="keyword">var</span> monthValue = Math.max(<span class="number">0</span>, (matches[partOrderMap[<span class="string">'M'</span>]] || <span class="number">0</span>) - <span class="number">1</span>);
+		<span class="keyword">var</span> dayValue = Math.max(<span class="number">1</span>, matches[partOrderMap[<span class="string">'d'</span>]] || <span class="number">0</span>);
+		<span class="keyword">var</span> twelveHourValue = matches[partOrderMap[<span class="string">'h'</span>]];
+		<span class="keyword">var</span> ampmValue = matches[partOrderMap[<span class="string">'a'</span>]];
+		<span class="keyword">var</span> twentyFourHourValue = matches[partOrderMap[<span class="string">'H'</span>]];
+		<span class="keyword">var</span> hourValue;
+		<span class="keyword">if</span> (twelveHourValue) {
+			hourValue = twelveHourValue % <span class="number">12</span>;
+			<span class="keyword">if</span> (ampmValue.toLowerCase().indexOf(<span class="string">'p'</span>) &gt; -<span class="number">1</span>) {
+				hourValue += <span class="number">12</span>;
+			}
+		} <span class="keyword">else</span> {
+			hourValue = twentyFourHourValue || <span class="number">0</span>;
+		}
+		hourValue = Math.max(<span class="number">0</span>, hourValue);
+		<span class="keyword">var</span> minuteValue = Math.max(<span class="number">0</span>, matches[partOrderMap[<span class="string">'m'</span>]] || <span class="number">0</span>);
+		<span class="keyword">var</span> secondValue = Math.max(<span class="number">0</span>, matches[partOrderMap[<span class="string">'s'</span>]] || <span class="number">0</span>);
+
+		parsedDate = <span class="keyword">new</span> Date(yearValue, monthValue, dayValue, hourValue, minuteValue, secondValue);
+
+		<span class="keyword">return</span> parsedDate;
+	}
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

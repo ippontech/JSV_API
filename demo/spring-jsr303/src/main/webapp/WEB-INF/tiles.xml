@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+	<definition name="base.definition" template="/WEB-INF/html/layout.jsp">
+		<put-attribute name="title" value="" />
+	</definition>
+
+	<definition name="form" extends="base.definition">
+		<put-attribute name="title" value="Informations utilisateur" />
+		<put-attribute name="body" value="/WEB-INF/html/form.jsp" />
+	</definition>
+
+	<definition name="result" extends="base.definition">
+		<put-attribute name="title" value="Résultat" />
+		<put-attribute name="body" value="/WEB-INF/html/result.jsp" />
+	</definition>
+</tiles-definitions>

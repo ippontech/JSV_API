@@ -1,0 +1,14 @@
+for generate jsDoc:
+
+- install jsDoc on the system:
+https://github.com/jsdoc3/jsdoc
+
+- add jsDoc to your path
+
+- execute command at the core root project:
+jsdoc src\js\jsv.js -d docs
+
+Minifier:
+
+the minifier is bind to the install maven lifecycle, just need to run:
+mvn install
