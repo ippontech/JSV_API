@@ -524,7 +524,7 @@ JSValidator.Element.prototype = {
 	 * @returns {JSValidator.Field.FieldActions}
 	 * @private
 	 */
-	_bindField: function (targetField) {
+	_bindFields: function (targetField) {
 		var instance = this;
 		var actionKey = instance.eventType + "." + instance.element.id;
 		var targetFields = targetField instanceof Array ? targetField : [targetField];
@@ -617,8 +617,8 @@ JSValidator.Element.ElementActions.prototype = {
 	 * @param {JSValidator.Field|JSValidator.Field[]} targetField
 	 * @returns {JSValidator.Field.FieldActions}
 	 */
-	bindField: function (targetField) {
-		return this.element._bindField(targetField);
+	bindFields: function (targetField) {
+		return this.element._bindFields(targetField);
 	}
 };
 

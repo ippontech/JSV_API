@@ -98,7 +98,7 @@
 			.addPostValidationProcess(function (event, fieldViolations) {
 				console.log("POST VALID");
 			})
-			.bindField([firstNamefield, lastNamefield, promofield])
+			.bindFields([firstNamefield, lastNamefield, promofield])
 			.addPreValidationProcess(function (event, field) {
 				console.log("PRE VALID SPECIFIC");
 			})

@@ -71,7 +71,7 @@
                 window.alert(JSON.stringify(buildJSONMessage("All the validation process is finish", "After fields validation", "Element", "event, fieldViolations", "nothing specific"), undefined, 2));
             })
         // only bind firstname and lastname to this element event
-            .bindField([formBeanValidator.getFieldWithName("lastname"), formBeanValidator.getFieldWithName("firstname")])
+            .bindFields([formBeanValidator.getFieldWithName("lastname"), formBeanValidator.getFieldWithName("firstname")])
         // Field API
             .addValidationCondition(function (event, field) {
                 window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "Condition", "Field", "event, field", "return false for abort validation on the current field"), undefined, 2));

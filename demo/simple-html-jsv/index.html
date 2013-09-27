@@ -54,7 +54,7 @@
     // bind all field validation to form submit
     // set preventDefault to true, in case of failed rules the event will be canceled
     formBeanValidator.bindValidationToElement("FormBean", "submit", true)
-            .bindField(formBeanValidator.getFields());
+            .bindFields(formBeanValidator.getFields());
 
     // bind age validation to keyup
     formBeanValidator.getFieldWithName("age").bindValidationToEvent("keyup");
