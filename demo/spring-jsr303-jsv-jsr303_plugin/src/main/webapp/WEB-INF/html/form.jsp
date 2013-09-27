@@ -67,7 +67,7 @@
 	</div>
 </form:form>
 
-<script type="text/javascript" src="https://rawgithub.com/ippontech/JSV_API/master/core/build/js/jsv.min.js"></script>
+<script type="text/javascript" src="https://rawgithub.com/ippontech/JSV_API/master/core/build/js/jsv.js"></script>
 <JSV:validator formId="FormBean" form="${formBean}" var="formBeanValidator">
 	{
 	errorLocalMessageTemplate: "<span class='{{class}} test'>{{message}}</span>",
