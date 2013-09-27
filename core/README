@@ -6,7 +6,7 @@ https://github.com/jsdoc3/jsdoc
 - add jsDoc to your path
 
 - execute command at the core root project:
-jsdoc src\js\jsv.js -d docs
+jsdoc src\js\core.js -d docs
 
 Minifier:
 
