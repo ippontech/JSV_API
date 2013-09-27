@@ -689,13 +689,13 @@ JSValidator.Field.prototype = {
 	 * @returns {boolean}
 	 * @private
 	 */
-	_executeConditions: function (event) {
+	_executeConditions: function (actionsKey) {
 		var instance = this;
 		try {
-			if (instance._getActionsForEvent(event).conditions.length > 0) {
+			if (instance._getActionsForActionKey(actionsKey).conditions.length > 0) {
 				instance.validator.log("Execute validation conditions");
-				instance._getActionsForEvent(event).conditions.forEach(function (condition) {
-					if (!condition(instance)) {
+				instance._getActionsForActionKey(actionsKey).conditions.forEach(function (condition) {
+					if (!condition(event, instance)) {
 						throw "conditionFailed";
 					}
 				});
@@ -704,6 +704,8 @@ JSValidator.Field.prototype = {
 			if (err == "conditionFailed") {
 				instance.validator.log("Conditions failed");
 				return false;
+			}else {
+				throw err;
 			}
 		}
 		return true;
@@ -870,7 +872,10 @@ JSValidator.Field.prototype = {
 		instance.validator.log("Start validating field:" + field.name);
 
 		// Do conditions
-		if (!field._hasValidationRules() || !field._executeConditions(event)) {
+		if (!field._hasValidationRules() || !field._executeConditions(actionsKey)) {
+			if (callback) {
+				callback([]);
+			}
 			return true;
 		}
 
