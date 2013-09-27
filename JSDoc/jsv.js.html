@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: core.js</title>
+    <title>JSDoc: Source: jsv.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: core.js</h1>
+    <h1 class="page-title">Source: jsv.js</h1>
     
     
 
@@ -56,85 +56,6 @@ if (!Function.prototype.apply) {
 		return result;
 	}
 }
-
-/**
- * Utils for make ajax request easily with native JavaScript Code
- * @namespace
- */
-var ajax = {};
-
-/**
- * Use the right AJAX object type depending on the browser
- * @function
- * @private
- */
-ajax.x = function () {
-	try {
-		return new ActiveXObject('Msxml2.XMLHTTP');
-	} catch (e1) {
-		try {
-			return new ActiveXObject('Microsoft.XMLHTTP');
-		} catch (e2) {
-			return new XMLHttpRequest();
-		}
-	}
-};
-
-/**
- *
- * @param {string} url URL to send the request
- * @param {function} callback Callback to process onSuccess
- * @param {string} method POST/GET
- * @param {JSON} data Data to send
- * @param {boolean} sync
- * @function
- * @private
- */
-ajax.send = function (url, callback, method, data, sync) {
-	var x = ajax.x();
-	x.open(method, url, sync);
-	x.onreadystatechange = function () {
-		if (x.readyState == 4) {
-			callback(x.responseText);
-		}
-	};
-	if (method == 'POST') {
-		x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	}
-	x.send(data);
-};
-
-/**
- * Ajax GET method, all the parameters in data are add to the URL query string.
- * @param {String} url URL to send the request
- * @param {JSON} data Data to send
- * @param {function} callback Callback to process onSuccess
- * @param {boolean} sync
- * @function
- */
-ajax.get = function (url, data, callback, sync) {
-	var query = [];
-	for (var key in data) {
-		query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-	}
-	ajax.send(url + '?' + query.join('&'), callback, 'GET', null, sync);
-};
-
-/**
- * Ajax POST method, all the parameters in data are send in the request
- * @param {String} url URL to send the request
- * @param {JSON} data Data to send
- * @param {function} callback Callback to process onSuccess
- * @param {boolean} sync
- * @function
- */
-ajax.post = function (url, data, callback, sync) {
-	var query = [];
-	for (var key in data) {
-		query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-	}
-	ajax.send(url, callback, 'POST', query.join('&'), sync);
-};
 
 /**
  * @class
@@ -186,6 +107,86 @@ JSValidator.defaultConf = {
  * @private
  */
 JSValidator.Utils = {
+	/**
+	 * Utils for make ajax request easily with native JavaScript Code
+	 * @namespace
+	 * @private
+	 */
+	_ajax: {
+		/**
+		 * Use the right AJAX object type depending on the browser
+		 * @function
+		 * @private
+		 */
+		x: function () {
+			try {
+				return new ActiveXObject('Msxml2.XMLHTTP');
+			} catch (e1) {
+				try {
+					return new ActiveXObject('Microsoft.XMLHTTP');
+				} catch (e2) {
+					return new XMLHttpRequest();
+				}
+			}
+		},
+
+		/**
+		 *
+		 * @param {string} url URL to send the request
+		 * @param {function} callback Callback to process onSuccess
+		 * @param {string} method POST/GET
+		 * @param {JSON} data Data to send
+		 * @param {boolean} sync
+		 * @function
+		 * @private
+		 */
+		send: function (url, callback, method, data, sync) {
+			var x = this.x();
+			x.open(method, url, sync);
+			x.onreadystatechange = function () {
+				if (x.readyState == 4) {
+					callback(x.responseText);
+				}
+			};
+			if (method == 'POST') {
+				x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			}
+			x.send(data);
+		},
+
+		/**
+		 * Ajax GET method, all the parameters in data are add to the URL query string.
+		 * @param {String} url URL to send the request
+		 * @param {JSON} data Data to send
+		 * @param {function} callback Callback to process onSuccess
+		 * @param {boolean} sync
+		 * @function
+		 */
+		doGet: function (url, data, callback, sync) {
+			var query = [];
+			for (var key in data) {
+				query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+			}
+			this.send(url + '?' + query.join('&'), callback, 'GET', null, sync);
+		},
+
+		/**
+		 * Ajax POST method, all the parameters in data are send in the request
+		 * @param {String} url URL to send the request
+		 * @param {JSON} data Data to send
+		 * @param {function} callback Callback to process onSuccess
+		 * @param {boolean} sync
+		 * @function
+		 */
+		doPost: function (url, data, callback, sync) {
+			var query = [];
+			for (var key in data) {
+				query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+			}
+			this.send(url, callback, 'POST', query.join('&'), sync);
+		}
+	},
+
 	/**
 	 * Method used for bind event to a specific element
 	 * @param {Element} element HTML element
@@ -550,7 +551,7 @@ JSValidator.Element.prototype = {
 	 * @returns {JSValidator.Field.FieldActions}
 	 * @private
 	 */
-	_bindField: function (targetField) {
+	_bindFields: function (targetField) {
 		var instance = this;
 		var actionKey = instance.eventType + "." + instance.element.id;
 		var targetFields = targetField instanceof Array ? targetField : [targetField];
@@ -643,8 +644,8 @@ JSValidator.Element.ElementActions.prototype = {
 	 * @param {JSValidator.Field|JSValidator.Field[]} targetField
 	 * @returns {JSValidator.Field.FieldActions}
 	 */
-	bindField: function (targetField) {
-		return this.element._bindField(targetField);
+	bindFields: function (targetField) {
+		return this.element._bindFields(targetField);
 	}
 };
 
@@ -716,13 +717,14 @@ JSValidator.Field.prototype = {
 	 * @returns {boolean}
 	 * @private
 	 */
-	_executeConditions: function (event) {
+	_executeConditions: function (actionsKey) {
 		var instance = this;
 		try {
-			if (instance._getActionsForEvent(event).conditions.length > 0) {
+			var conditions = instance._getActionsForActionKey(actionsKey);
+			if (conditions && conditions.length > 0) {
 				instance.validator.log("Execute validation conditions");
-				instance._getActionsForEvent(event).conditions.forEach(function (condition) {
-					if (!condition(instance)) {
+				instance._getActionsForActionKey(actionsKey).conditions.forEach(function (condition) {
+					if (!condition(event, instance)) {
 						throw "conditionFailed";
 					}
 				});
@@ -731,6 +733,8 @@ JSValidator.Field.prototype = {
 			if (err == "conditionFailed") {
 				instance.validator.log("Conditions failed");
 				return false;
+			} else {
+				throw err;
 			}
 		}
 		return true;
@@ -819,7 +823,7 @@ JSValidator.Field.prototype = {
 
 			instance.validator.log('AJAX Validating rules ' +
 				'for field [' + ajaxRules[0].field + ']');
-			ajax.post(ajaxServiceURL, data, function (data) {
+			JSValidator.Utils._ajax.doPost(ajaxServiceURL, data, function (data) {
 				if (data) {
 					ruleViolations = ruleViolations.concat(JSON.parse(data));
 					if (ruleViolations.length > 0) {
@@ -897,7 +901,10 @@ JSValidator.Field.prototype = {
 		instance.validator.log("Start validating field:" + field.name);
 
 		// Do conditions
-		if (!field._hasValidationRules() || !field._executeConditions(event)) {
+		if (!field._hasValidationRules() || !field._executeConditions(actionsKey)) {
+			if (callback) {
+				callback([]);
+			}
 			return true;
 		}
 
@@ -1629,8 +1636,7 @@ JSValidator.DateParser = {
 
 		return parsedDate;
 	}
-};
-</code></pre>
+};</code></pre>
         </article>
     </section>
 
@@ -1640,13 +1646,13 @@ JSValidator.DateParser = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="JSValidator.html">JSValidator</a></li><li><a href="JSValidator.Element.html">Element</a></li><li><a href="JSValidator.Element.ElementActions.html">ElementActions</a></li><li><a href="JSValidator.Field.html">Field</a></li><li><a href="JSValidator.Field.FieldActions.html">FieldActions</a></li><li><a href="JSValidator.FieldViolation.html">FieldViolation</a></li><li><a href="JSValidator.Form.html">Form</a></li><li><a href="JSValidator.Rule.html">Rule</a></li><li><a href="JSValidator.RuleViolation.html">RuleViolation</a></li></ul><h3>Namespaces</h3><ul><li><a href="ajax.html">ajax</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="JSValidator.html">JSValidator</a></li><li><a href="JSValidator.Element.html">Element</a></li><li><a href="JSValidator.Element.ElementActions.html">ElementActions</a></li><li><a href="JSValidator.Field.html">Field</a></li><li><a href="JSValidator.Field.FieldActions.html">FieldActions</a></li><li><a href="JSValidator.FieldViolation.html">FieldViolation</a></li><li><a href="JSValidator.Form.html">Form</a></li><li><a href="JSValidator.Rule.html">Rule</a></li><li><a href="JSValidator.RuleViolation.html">RuleViolation</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Thu Sep 26 2013 15:00:39 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Fri Sep 27 2013 17:11:06 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
