@@ -31,85 +31,6 @@ if (!Function.prototype.apply) {
 }
 
 /**
- * Utils for make ajax request easily with native JavaScript Code
- * @namespace
- */
-var ajax = {};
-
-/**
- * Use the right AJAX object type depending on the browser
- * @function
- * @private
- */
-ajax.x = function () {
-	try {
-		return new ActiveXObject('Msxml2.XMLHTTP');
-	} catch (e1) {
-		try {
-			return new ActiveXObject('Microsoft.XMLHTTP');
-		} catch (e2) {
-			return new XMLHttpRequest();
-		}
-	}
-};
-
-/**
- *
- * @param {string} url URL to send the request
- * @param {function} callback Callback to process onSuccess
- * @param {string} method POST/GET
- * @param {JSON} data Data to send
- * @param {boolean} sync
- * @function
- * @private
- */
-ajax.send = function (url, callback, method, data, sync) {
-	var x = ajax.x();
-	x.open(method, url, sync);
-	x.onreadystatechange = function () {
-		if (x.readyState == 4) {
-			callback(x.responseText);
-		}
-	};
-	if (method == 'POST') {
-		x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	}
-	x.send(data);
-};
-
-/**
- * Ajax GET method, all the parameters in data are add to the URL query string.
- * @param {String} url URL to send the request
- * @param {JSON} data Data to send
- * @param {function} callback Callback to process onSuccess
- * @param {boolean} sync
- * @function
- */
-ajax.get = function (url, data, callback, sync) {
-	var query = [];
-	for (var key in data) {
-		query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-	}
-	ajax.send(url + '?' + query.join('&'), callback, 'GET', null, sync);
-};
-
-/**
- * Ajax POST method, all the parameters in data are send in the request
- * @param {String} url URL to send the request
- * @param {JSON} data Data to send
- * @param {function} callback Callback to process onSuccess
- * @param {boolean} sync
- * @function
- */
-ajax.post = function (url, data, callback, sync) {
-	var query = [];
-	for (var key in data) {
-		query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-	}
-	ajax.send(url, callback, 'POST', query.join('&'), sync);
-};
-
-/**
  * @class
  * @param {string} name The form id in the page
  * @param {string} formObjectName the full qualified object name on server side, mandatory for AJAX validation
@@ -159,6 +80,86 @@ JSValidator.defaultConf = {
  * @private
  */
 JSValidator.Utils = {
+	/**
+	 * Utils for make ajax request easily with native JavaScript Code
+	 * @namespace
+	 * @private
+	 */
+	_ajax: {
+		/**
+		 * Use the right AJAX object type depending on the browser
+		 * @function
+		 * @private
+		 */
+		x: function () {
+			try {
+				return new ActiveXObject('Msxml2.XMLHTTP');
+			} catch (e1) {
+				try {
+					return new ActiveXObject('Microsoft.XMLHTTP');
+				} catch (e2) {
+					return new XMLHttpRequest();
+				}
+			}
+		},
+
+		/**
+		 *
+		 * @param {string} url URL to send the request
+		 * @param {function} callback Callback to process onSuccess
+		 * @param {string} method POST/GET
+		 * @param {JSON} data Data to send
+		 * @param {boolean} sync
+		 * @function
+		 * @private
+		 */
+		send: function (url, callback, method, data, sync) {
+			var x = this.x();
+			x.open(method, url, sync);
+			x.onreadystatechange = function () {
+				if (x.readyState == 4) {
+					callback(x.responseText);
+				}
+			};
+			if (method == 'POST') {
+				x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			}
+			x.send(data);
+		},
+
+		/**
+		 * Ajax GET method, all the parameters in data are add to the URL query string.
+		 * @param {String} url URL to send the request
+		 * @param {JSON} data Data to send
+		 * @param {function} callback Callback to process onSuccess
+		 * @param {boolean} sync
+		 * @function
+		 */
+		doGet: function (url, data, callback, sync) {
+			var query = [];
+			for (var key in data) {
+				query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+			}
+			this.send(url + '?' + query.join('&'), callback, 'GET', null, sync);
+		},
+
+		/**
+		 * Ajax POST method, all the parameters in data are send in the request
+		 * @param {String} url URL to send the request
+		 * @param {JSON} data Data to send
+		 * @param {function} callback Callback to process onSuccess
+		 * @param {boolean} sync
+		 * @function
+		 */
+		doPost: function (url, data, callback, sync) {
+			var query = [];
+			for (var key in data) {
+				query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+			}
+			this.send(url, callback, 'POST', query.join('&'), sync);
+		}
+	},
+
 	/**
 	 * Method used for bind event to a specific element
 	 * @param {Element} element HTML element
@@ -692,7 +693,8 @@ JSValidator.Field.prototype = {
 	_executeConditions: function (actionsKey) {
 		var instance = this;
 		try {
-			if (instance._getActionsForActionKey(actionsKey).conditions.length > 0) {
+			var conditions = instance._getActionsForActionKey(actionsKey);
+			if (conditions && conditions.length > 0) {
 				instance.validator.log("Execute validation conditions");
 				instance._getActionsForActionKey(actionsKey).conditions.forEach(function (condition) {
 					if (!condition(event, instance)) {
@@ -704,7 +706,7 @@ JSValidator.Field.prototype = {
 			if (err == "conditionFailed") {
 				instance.validator.log("Conditions failed");
 				return false;
-			}else {
+			} else {
 				throw err;
 			}
 		}
@@ -794,7 +796,7 @@ JSValidator.Field.prototype = {
 
 			instance.validator.log('AJAX Validating rules ' +
 				'for field [' + ajaxRules[0].field + ']');
-			ajax.post(ajaxServiceURL, data, function (data) {
+			JSValidator.Utils._ajax.doPost(ajaxServiceURL, data, function (data) {
 				if (data) {
 					ruleViolations = ruleViolations.concat(JSON.parse(data));
 					if (ruleViolations.length > 0) {
