@@ -10,9 +10,10 @@
 	<modules>
 		<module>core</module>
 		<module>plugins/jsr303-plugin</module>
+		<module>plugins/SpringMVC-plugin</module>
 		<module>demo/spring</module>
 		<module>demo/spring-jsr303</module>
 		<module>demo/spring-jsr303-jsr303js</module>
-		<module>demo/spring-jsr303-jsv-jsr303_plugin</module>
+		<module>demo/spring-jsr303-jsv-plugins</module>
 	</modules>
 </project>

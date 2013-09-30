@@ -5,7 +5,7 @@
 	<tlib-version>1.1.1</tlib-version>
 	<jsp-version>1.2</jsp-version>
 	<short-name>JSV</short-name>
-	<uri>http://ippon.fr/projects/jsv/</uri>
+	<uri>http://ippon.fr/projects/jsv/jsr303-plugin</uri>
 	<description>
 	</description>
 	<tag>

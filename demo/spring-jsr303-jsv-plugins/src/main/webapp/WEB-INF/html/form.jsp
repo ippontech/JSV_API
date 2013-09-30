@@ -1,7 +1,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<%@taglib prefix="JSV" uri="http://ippon.fr/projects/jsv/" %>
+<%@taglib prefix="jsv-jsr303-plugin" uri="http://ippon.fr/projects/jsv/jsr303-plugin" %>
+<%@taglib prefix="jsv-SpringMVC-plugin" uri="http://ippon.fr/projects/jsv/springMVC-plugin" %>
 
 <spring:url value="/validate" javaScriptEscape="true" var="validate_url"/>
 <spring:url value="/validate2" javaScriptEscape="true" var="validate_url2"/>
@@ -67,22 +68,22 @@
 	</div>
 </form:form>
 
+<%-- JS API --%>
 <script type="text/javascript" src="https://rawgithub.com/ippontech/JSV_API/master/core/build/js/jsv.js"></script>
-<JSV:validator formId="FormBean" form="${formBean}" var="formBeanValidator">
+
+<%-- Spring MVC plugin: override API default conf with a special Spring MVC conf--%>
+<jsv-SpringMVC-plugin:config filePath="/js/SpringMVC-jsv-conf.js" scriptSrc="js/SpringMVC-jsv-conf.js" />
+
+<%-- jsr303 plugin: instanciate a validator with the form bean constraints --%>
+<jsv-jsr303-plugin:validator formId="FormBean" form="${formBean}" var="formBeanValidator">
 	{
 	errorLocalMessageTemplate: "<span class='{{class}} test'>{{message}}</span>",
 	ajaxValidateFieldURL:"${validate_url2}",
-	ajaxValidateFieldParams: function(objectName, fieldName, fieldvalue, constaints){
-	var data = {
-	fieldName: fieldName,
-	constraints: constaints
-	};
-	data[fieldName] = fieldvalue;
-	return data;
-	},
 	debug:true
 	}
-</JSV:validator>
+</jsv-jsr303-plugin:validator>
+
+<%-- attach validation on events --%>
 <script type="text/javascript">
 	var firstNamefield = formBeanValidator.getFieldWithName("firstname");
 	var lastNamefield = formBeanValidator.getFieldWithName("lastname");
