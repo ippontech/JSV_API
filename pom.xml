@@ -15,5 +15,6 @@
 		<module>demo/spring-jsr303</module>
 		<module>demo/spring-jsr303-jsr303js</module>
 		<module>demo/spring-jsr303-jsv-plugins</module>
+		<module>demo/javaEE-jsr303-jsv-plugins</module>
 	</modules>
 </project>

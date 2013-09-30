@@ -1,0 +1,27 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<display-name>jsv demo</display-name>
+
+	<servlet>
+		<servlet-name>Servlet form</servlet-name>
+		<servlet-class>fr.ippon.blog.servlet.FormServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Servlet validate</servlet-name>
+		<servlet-class>fr.ippon.blog.servlet.ValidateServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Servlet form</servlet-name>
+		<url-pattern>/form</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Servlet validate</servlet-name>
+		<url-pattern>/validate</url-pattern>
+	</servlet-mapping>
+</web-app>
