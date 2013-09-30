@@ -89,7 +89,7 @@ public class ValidatorTag extends BodyTagSupport{
 			out.write("<script type=\"text/javascript\" id=\"");
 			out.write(formId + "JSValidator");
 			out.write("\">");
-			generator.generateJavaScript(out, formId, var, getClassNameForForm(), bodyString, rules);
+			generator.generateJavaScript(out, formId, var, bodyString, rules);
 			out.write("</script>");
 			return EVAL_PAGE;
 		}
@@ -100,15 +100,6 @@ public class ValidatorTag extends BodyTagSupport{
 		} catch (NoSuchFieldException e) {
 			throw new JspException("Could not find field", e);
 		}
-	}
-
-	public String getClassNameForForm(){
-		if(formClassName != null)
-			return formClassName;
-		else if(form != null)
-			return form.getClass().getName();
-		else
-			return "";
 	}
 
 	public List<Rule> getRulesForClassName(String fullQualifiedName) throws ClassNotFoundException, NoSuchFieldException {

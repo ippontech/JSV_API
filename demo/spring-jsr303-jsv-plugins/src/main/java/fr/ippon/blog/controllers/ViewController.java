@@ -42,20 +42,6 @@ public class ViewController {
 	}
 
 	@RequestMapping(value="/validate", method = RequestMethod.POST)
-	public @ResponseBody List<RuleViolation> validateField(@RequestParam String objectName,
-													 @RequestParam String fieldName,
-													 @RequestParam(required = false) String fieldValue,
-													 @RequestParam String[] constraints)
-			throws ClassNotFoundException, IllegalAccessException, InstantiationException,
-			InvocationTargetException {
-
-		Object o = Class.forName(objectName).newInstance();
-		BeanUtils.setProperty(o, fieldName, fieldValue);
-
-		return FieldValidator.validate(o, fieldName, constraints);
-	}
-
-	@RequestMapping(value="/validate2", method = RequestMethod.POST)
 	public @ResponseBody List<RuleViolation> validateField(@ModelAttribute FormBean formBean,
 														   @RequestParam String fieldName,
 														   @RequestParam String[] constraints){

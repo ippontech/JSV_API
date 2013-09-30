@@ -39,9 +39,8 @@ if (!Function.prototype.apply) {
  * @property {JSValidator.Form} form The binding form
  **/
 
-var JSValidator = function (name, formObjectName, rules, config) {
+var JSValidator = function (name, rules, config) {
 	this.name = name;
-	this.objectName = formObjectName;
 	this.config = config;
 	this.rules = rules;
 	this.form = this._findForm(name);	//Attach form to the validator
@@ -789,7 +788,7 @@ JSValidator.Field.prototype = {
 			});
 
 			var data = instance.validator._getProp("ajaxValidateFieldParams")(
-				instance.validator.objectName
+				instance.validator._getProp("ajaxFormFullQualifiedName")
 				, ajaxRules[0].field
 				, instance.getValue()
 				, constraints.join(","));

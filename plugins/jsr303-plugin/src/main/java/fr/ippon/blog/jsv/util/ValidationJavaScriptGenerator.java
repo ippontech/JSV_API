@@ -45,15 +45,13 @@ public class ValidationJavaScriptGenerator {
    * @param rules               the collection of <code>Rule</code> to translate
    * @throws java.io.IOException if there is an io exception
    */
-  public void generateJavaScript(Writer writer, String formId, String varName, String formObjectName,
+  public void generateJavaScript(Writer writer, String formId, String varName,
 								 String configJson, List<Rule> rules) throws IOException {
     try {
       setWriter(writer);
 		append(varName);
       append(" = new JSValidator(");
       appendJsString(formId);
-      append(',');
-		appendJsString(formObjectName);
 		append(',');
 		appendArrayValidators(rules);
       append(',');

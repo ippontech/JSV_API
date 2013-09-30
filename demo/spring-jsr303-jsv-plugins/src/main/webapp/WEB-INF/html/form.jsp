@@ -5,7 +5,6 @@
 <%@taglib prefix="jsv-SpringMVC-plugin" uri="http://ippon.fr/projects/jsv/springMVC-plugin" %>
 
 <spring:url value="/validate" javaScriptEscape="true" var="validate_url"/>
-<spring:url value="/validate2" javaScriptEscape="true" var="validate_url2"/>
 
 <form:form commandName="formBean" method="POST"
 		   cssClass="uni-form" servletRelativeAction="/send" id="FormBean">
@@ -77,9 +76,10 @@
 <%-- jsr303 plugin: instanciate a validator with the form bean constraints --%>
 <jsv-jsr303-plugin:validator formId="FormBean" form="${formBean}" var="formBeanValidator">
 	{
-	errorLocalMessageTemplate: "<span class='{{class}} test'>{{message}}</span>",
-	ajaxValidateFieldURL:"${validate_url2}",
-	debug:true
+		errorLocalMessageTemplate: "<span class='{{class}} test'>{{message}}</span>",
+		ajaxValidateFieldURL:"${validate_url}",
+		ajaxFormFullQualifiedName: "fr.ippon.blog.model.FormBean",
+		debug:true
 	}
 </jsv-jsr303-plugin:validator>
 
