@@ -1,1 +1,5 @@
-This file was created by IntelliJ IDEA 12.1.4 for binding GitHub repository
+This project try to give you a simple way to validate HTML forms. The core API only depends on native Javascript, but plugins can be used to further enhance its power.
+
+The file can be downloaded here : https://github.com/ippontech/JSV_API/tree/master/core/build/js
+
+For more information about this tool, please read the associated wiki pages.
