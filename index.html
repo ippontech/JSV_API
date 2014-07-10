@@ -45,6 +45,11 @@
 <p>The API contains several validation rules 'out-of-box', based on the Java JSR 303 (validation API), but you can extend them and create any new validation you like, in a blink of an eye.</p>
 
 <h3>
+<a name="who-can-use-jsv_api-" class="anchor" href="#who-can-use-jsv_api-"><span class="octicon octicon-link"></span></a>Who can use JSV_API ?</h3>
+
+<p>Anyone who works on websites. Yes, I mean anyone. This plugin can validate anything you need as long as you have an HTML Form, regardless the language used to generate the form. The core is written in JS, but we have Java plugins, and we plan to add others later. So if you have at least one HTML form in your website, give it a try !</p>
+
+<h3>
 <a name="which-problems-does-jsv_api-solve-" class="anchor" href="#which-problems-does-jsv_api-solve-"><span class="octicon octicon-link"></span></a>Which problems does JSV_API solve ?</h3>
 
 <h4>
@@ -52,9 +57,87 @@
 
 <p>Depending on what client-side framework you use, you may (or may not !) have a built-in validation API. While most of them may be great, you are sometimes limited to what you can validate. JSV_API lets you  create any kind of validation you need.</p>
 
-<p>[...]</p>
+<h3>
+<a name="event-handeling" class="anchor" href="#event-handeling"><span class="octicon octicon-link"></span></a>Event handeling</h3>
+
+<p>When you validate things, you may want to add custom behaviour before or after the fields are actually validated. JSV_API provides a simple way to do that. There is 3 kinds of events you can use :</p>
+
+<ul>
+<li>Global events : Before and after the validation, regardless the validating data or fields</li>
+<li>Field events : Before and after a specific field is validated</li>
+<li>Element events : When a event is triggered in a specific field (like a click on a button, for instance)</li>
+</ul><h3>
+<a name="server-side-validation" class="anchor" href="#server-side-validation"><span class="octicon octicon-link"></span></a>Server-side validation</h3>
+
+<p>Client side data validation is great because it prevents the whole form to be sent and the page to be refreshed in order to verify the data, and thus saves bandwidth. But as it is mainly javascript, one could quite easily alter your validation code, and send erroneous data anyway to your server. If you want to prevent that, you'll need a server-side validation as well.</p>
+
+<p>But this is where the fun ends : why should you write both the client-side and the server-side validation code in different languages ? Why should you write them at least twice anyway ? JSV_API helps you with that, by fetching validation rules on the server, and applying them to the client. If a user wants to temper with that code ? Fine, same validation on server</p>
 
 <h3>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick start</h3>
+
+<p>Here you go, ready to use it. In order to minimise the overall output, we'll use the following HTML for all code snippets :</p>
+
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;JSV Documentation&lt;/title&gt;
+    &lt;head&gt;
+    &lt;body&gt;
+        &lt;form action="/send" method="POST"&gt;
+            &lt;div&gt;
+                &lt;label for="firstname"&gt;Firstname: &lt;/label&gt;
+                &lt;input type="text" name="firstname" /&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;label for="sex"&gt;Sex: &lt;/label&gt;
+                &lt;select name="sex"&gt;
+                    &lt;option value="M"&gt;Male&lt;/option&gt;
+                    &lt;option value="F"&gt;Female&lt;/option&gt;
+                &lt;/select&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                Choose 2 interests:
+                &lt;label&gt;&lt;input type="checkbox" name="interest" /&gt; Sport&lt;/label&gt;
+                &lt;label&gt;&lt;input type="checkbox" name="interest" /&gt; Computer science&lt;/label&gt;
+                &lt;label&gt;&lt;input type="checkbox" name="interest" /&gt; Music&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;input type="submit" value="Send" /&gt;
+            &lt;/div&gt;
+        &lt;/form&gt;
+        &lt;script type="text/javascript" src="jsv.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript"&gt;
+            &lt;!-- Example code will be placed here --&gt;
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>In this code, right after the "form" part, you can see our validation engine being imported :</p>
+
+<pre><code>&lt;script type="text/javascript" src="jsv.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<h4>
+<a name="simple-client-side-validation" class="anchor" href="#simple-client-side-validation"><span class="octicon octicon-link"></span></a>Simple client-side validation</h4>
+
+<p>The quick example show you how to check if the 'firstname' field is not empty. That's it !</p>
+
+<pre><code>jsValidator = new JSValidator('myFormId',
+    new Array(
+        new JSValidator.Rule('firstname', 'NotNull', {'message': 'Firstname should not be empty'})
+    )
+);
+</code></pre>
+
+<p>In this constructor, you'll need to provide the HTML form's id, and an array of Validation Rules. Those contain 3 parts :</p>
+
+<ul>
+<li>the name of the element they're related to</li>
+<li>the constraint name (can be whatever you want)</li>
+<li>an array of related properties (message, size, min, max, etc.), i.e. whatever extra information used in the validation process
+From now on, our validator will be available in any of our JS code using the "jsValidator" variable.</li>
+</ul><h3>
 <a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h3>
 
 <ul>
