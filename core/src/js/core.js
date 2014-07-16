@@ -267,7 +267,7 @@ JSValidator.Utils = {
 	 * @private
 	 */
 	_buildErrorClassName: function (field, constraint) {
-		return field.name + "_" + constraint + "_error"
+		return "error " + field.name + "_" + constraint + "_error"
 	}
 };
 

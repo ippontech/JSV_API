@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSV DEMO - HTML simple</title>
+    <title>JSV DEMO - HTML full</title>
+    <style type="text/css">
+        .error { color: red}
+    </style>
 </head>
 <body>
 <form id="FormBean" class="uni-form" action="/" method="POST">
@@ -11,7 +14,7 @@
 
     <div class="ctrl-holder">
         <label for="firstname">
-            Prénom
+            Pr&eacute;nom
         </label>
         <input id="firstname" name="firstname" type="text" value="">
 
@@ -42,66 +45,66 @@
     </div>
 </form>
 
-<script type="text/javascript" src="https://rawgithub.com/ippontech/JSV_API/master/core/build/js/jsv.js"></script>
+<script type="text/javascript" src="../../core/build/js/jsv.js"></script>
 <script>
-    function buildJSONMessage(when, phase, API, parameters, actions) {
-        return {
+    function alertMessage(when, phase, API, parameters, actions) {
+        alert(JSON.stringify({
             when: when,
             phase: phase,
             api: API,
             parameters: parameters,
             possible_actions: actions
-        }
+        }, null, 2));
     }
 
-    var rules = [new JSValidator.Rule('lastname', 'NotEmpty', {'message': 'Le nom ne doit pas être vide'}),
-        new JSValidator.Rule('firstname', 'NotEmpty', {'message': 'Le prénom ne doit pas être vide'}),
-        new JSValidator.Rule('age', 'Min', {'message': 'Vous devez être majeur', 'value': 18})];
+    var rules = [new JSValidator.Rule('lastname', 'NotEmpty', {'message': 'Le nom ne doit pas &ecirc;tre vide'}),
+        new JSValidator.Rule('firstname', 'NotEmpty', {'message': 'Le pr&eacute;nom ne doit pas &ecirc;tre vide'}),
+        new JSValidator.Rule('age', 'Min', {'message': 'Vous devez &ecirc;tre majeur', 'value': 18})];
 
-    formBeanValidator = new JSValidator('FormBean', null, rules, {debug: true});
+    formBeanValidator = new JSValidator('FormBean', rules, {debug: true});
 
     // bind partial validation to form submit (only the firstname and the lastname)
     // set preventDefault to true, in case of failed rules the event will be canceled
     formBeanValidator.bindValidationToElement("FormBean", "submit", true)
         // Element API
             .addPreValidationProcess(function (event) {
-                window.alert(JSON.stringify(buildJSONMessage("Submit Event triggered", "Before fields validation", "Element", "event", "nothing specific"), undefined, 2));
+                alertMessage("Submit Event triggered", "Before fields validation", "Element", "event", "nothing specific");
             })
             .addPostValidationProcess(function (event, fieldViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("All the validation process is finish", "After fields validation", "Element", "event, fieldViolations", "nothing specific"), undefined, 2));
+                alertMessage("All the validation process is finish", "After fields validation", "Element", "event, fieldViolations", "nothing specific");
             })
         // only bind firstname and lastname to this element event
             .bindFields([formBeanValidator.getFieldWithName("lastname"), formBeanValidator.getFieldWithName("firstname")])
         // Field API
             .addValidationCondition(function (event, field) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "Condition", "Field", "event, field", "return false for abort validation on the current field"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "Condition", "Field", "event, field", "return false for abort validation on the current field");
                 return true;
             })
             .addPreValidationProcess(function (event, field) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "Before field validation", "Field", "event, field", "change the field value before validation"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "Before field validation", "Field", "event, field", "change the field value before validation");
             })
             .addPostValidationBeforeMessageProcess(function (event, field, ruleViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "After field validation, Before message display", "Field", "event, field, ruleViolations", "change the errors messages"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "After field validation, Before message display", "Field", "event, field, ruleViolations", "change the errors messages");
             })
             .addPostValidationAfterMessageProcess(function (event, field, ruleViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "After field validation, After message display", "Field", "event, field, ruleViolations", "nothing specific"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "After field validation, After message display", "Field", "event, field, ruleViolations", "nothing specific");
             });
 
     // bind age validation to keyup
     formBeanValidator.getFieldWithName("age").bindValidationToEvent("keyup")
         // Field API
             .addValidationCondition(function (event, field) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "Condition", "Field", "event, field", "return false for abort validation on the current field"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "Condition", "Field", "event, field", "return false for abort validation on the current field");
                 return true;
             })
             .addPreValidationProcess(function (event, field) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "Before field validation", "Field", "event, field", "change the field value before validation"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "Before field validation", "Field", "event, field", "change the field value before validation");
             })
             .addPostValidationBeforeMessageProcess(function (event, field, ruleViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "After field validation, Before message display", "Field", "event, field, ruleViolations", "change the errors messages"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "After field validation, Before message display", "Field", "event, field, ruleViolations", "change the errors messages");
             })
             .addPostValidationAfterMessageProcess(function (event, field, ruleViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("Field specific process: " + field.name, "After field validation, After message display", "Field", "event, field, ruleViolations", "nothing specific"), undefined, 2));
+                alertMessage("Field specific process: " + field.name, "After field validation, After message display", "Field", "event, field, ruleViolations", "nothing specific");
             })
         // Add a delay to this event, validate the field only 1 seconde after the last keyup
         // Another keyup in the interval reset the timer.
@@ -110,13 +113,13 @@
     formBeanValidator.getForm()
         // Form API
             .addFieldsPreValidationProcess(function (event, field) {
-                window.alert(JSON.stringify(buildJSONMessage("Global fields process", "Before field specific process, before validation", "Form", "event, field", "change field value before validation"), undefined, 2));
+                alertMessage("Global fields process", "Before field specific process, before validation", "Form", "event, field", "change field value before validation");
             })
             .addFieldsPostValidationBeforeMessageProcess(function (event, field, ruleViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("Global fields process", "Before field specific process, after validation and before message display", "Form", "event, field, ruleViolations", "change the errors messages"), undefined, 2));
+                alertMessage("Global fields process", "Before field specific process, after validation and before message display", "Form", "event, field, ruleViolations", "change the errors messages");
             })
             .addFieldsPostValidationAfterMessageProcess(function (event, field, ruleViolations) {
-                window.alert(JSON.stringify(buildJSONMessage("Global fields process", "Before field specific process, after validation and after message display", "Form", "event, field, ruleViolations", "nothing specific"), undefined, 2));
+                alertMessage("Global fields process", "Before field specific process, after validation and after message display", "Form", "event, field, ruleViolations", "nothing specific");
             })
 </script>
 </body>

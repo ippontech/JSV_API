@@ -2,6 +2,9 @@
 <html>
 <head>
     <title>JSV DEMO - HTML simple</title>
+    <style type="text/css">
+        .error { color: red}
+    </style>
 </head>
 <body>
 <form id="FormBean" class="uni-form" action="/" method="POST">
@@ -11,7 +14,7 @@
 
     <div class="ctrl-holder">
         <label for="firstname">
-            Prénom
+            Pr&eacute;nom
         </label>
         <input id="firstname" name="firstname" type="text" value="">
 
@@ -42,14 +45,14 @@
     </div>
 </form>
 
-<script type="text/javascript" src="https://rawgithub.com/ippontech/JSV_API/master/core/build/js/jsv.js"></script>
+<script type="text/javascript" src="../../core/build/js/jsv.js"></script>
 <script>
 
-    var rules = [new JSValidator.Rule('lastname', 'NotEmpty', {'message': 'Le nom ne doit pas être vide'}),
-        new JSValidator.Rule('firstname', 'NotEmpty', {'message': 'Le prénom ne doit pas être vide'}),
-        new JSValidator.Rule('age', 'Min', {'message': 'Vous devez être majeur', 'value': 18})];
+    var rules = [new JSValidator.Rule('lastname', 'NotEmpty', {'message': 'Le nom ne doit pas &ecirc;tre vide'}),
+        new JSValidator.Rule('firstname', 'NotEmpty', {'message': 'Le pr&eacute;nom ne doit pas &ecirc;tre vide'}),
+        new JSValidator.Rule('age', 'Min', {'message': 'Vous devez &ecirc;tre majeur', 'value': 18})];
 
-    formBeanValidator = new JSValidator('FormBean', null, rules, {debug: true});
+    formBeanValidator = new JSValidator('FormBean', rules, {debug: true});
 
     // bind all field validation to form submit
     // set preventDefault to true, in case of failed rules the event will be canceled

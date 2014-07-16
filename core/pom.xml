@@ -20,8 +20,8 @@
 						<phase>install</phase>
 						<configuration>
 							<charset>UTF-8</charset>
-							<webappSourceDir>./src</webappSourceDir>
-							<webappTargetDir>./build</webappTargetDir>
+							<webappSourceDir>${basedir}/src</webappSourceDir>
+							<webappTargetDir>${basedir}/build</webappTargetDir>
 							<jsSourceIncludes>
 								<jsSourceInclude>**</jsSourceInclude>
 							</jsSourceIncludes>

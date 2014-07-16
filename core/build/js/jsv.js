@@ -33,7 +33,6 @@ if (!Function.prototype.apply) {
 /**
  * @class
  * @param {string} name The form id in the page
- * @param {string} formObjectName the full qualified object name on server side, mandatory for AJAX validation
  * @param {JSValidator.Rule[]} rules The JSON rule array
  * @param {JSON} config The Extra config for override default config
  * @property {JSValidator.Form} form The binding form
@@ -160,7 +159,7 @@ JSValidator.Utils = {
 	},
 
 	/**
-	 * Method used for bind event to a specific element
+	 * Method used to bind event to a specific element
 	 * @param {Element} element HTML element
 	 * @param {String} type Event type (change/keypress/keydown/...)
 	 * @param {function} fn Callback function
@@ -176,7 +175,7 @@ JSValidator.Utils = {
 	},
 
 	/**
-	 * Method use for bind all the field elements of a validator Field to a specific element
+	 * Method use to bind all the field elements of a validator Field to a specific element
 	 * @param {JSValidator.Field} field
 	 * @param {String} type Event type (change/keypress/keydown/...)
 	 * @param {function} callback
@@ -268,7 +267,7 @@ JSValidator.Utils = {
 	 * @private
 	 */
 	_buildErrorClassName: function (field, constraint) {
-		return field.name + "_" + constraint + "_error"
+		return "error " + field.name + "_" + constraint + "_error"
 	}
 };
 
