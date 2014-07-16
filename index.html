@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>Jsv api by ippontech</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Jsv api : Easy and powerful form validation : " />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Jsv api : Easy and powerful form validation</title>
   </head>
 
   <body>
-    <div id="container">
-      <div class="inner">
 
-        <header>
-          <h1>Jsv api</h1>
-          <h2></h2>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ippontech/JSV_API">View on GitHub</a>
+
+          <h1 id="project_title">Jsv api : Easy and powerful form validation</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ippontech/JSV_API/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ippontech/JSV_API/tarball/master">Download this project as a tar.gz file</a>
+            </section>
         </header>
+    </div>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/ippontech/JSV_API/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/ippontech/JSV_API/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/ippontech/JSV_API" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
-
-        <hr>
-
-        <section id="main_content">
-          <h3>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
 <a name="why-jsv_api-" class="anchor" href="#why-jsv_api-"><span class="octicon octicon-link"></span></a>Why JSV_API ?</h3>
 
 <p>When you create a website, you often have to deal with HTML forms. Those forms might need data validation, like :</p>
@@ -57,8 +57,8 @@
 
 <p>Depending on what client-side framework you use, you may (or may not !) have a built-in validation API. While most of them may be great, you are sometimes limited to what you can validate. JSV_API lets you  create any kind of validation you need.</p>
 
-<h3>
-<a name="event-handeling" class="anchor" href="#event-handeling"><span class="octicon octicon-link"></span></a>Event handeling</h3>
+<h4>
+<a name="event-handeling" class="anchor" href="#event-handeling"><span class="octicon octicon-link"></span></a>Event handeling</h4>
 
 <p>When you validate things, you may want to add custom behaviour before or after the fields are actually validated. JSV_API provides a simple way to do that. There is 3 kinds of events you can use :</p>
 
@@ -66,8 +66,8 @@
 <li>Global events : Before and after the validation, regardless the validating data or fields</li>
 <li>Field events : Before and after a specific field is validated</li>
 <li>Element events : When a event is triggered in a specific field (like a click on a button, for instance)</li>
-</ul><h3>
-<a name="server-side-validation" class="anchor" href="#server-side-validation"><span class="octicon octicon-link"></span></a>Server-side validation</h3>
+</ul><h4>
+<a name="server-side-validation" class="anchor" href="#server-side-validation"><span class="octicon octicon-link"></span></a>Server-side validation</h4>
 
 <p>Client side data validation is great because it prevents the whole form to be sent and the page to be refreshed in order to verify the data, and thus saves bandwidth. But as it is mainly javascript, one could quite easily alter your validation code, and send erroneous data anyway to your server. If you want to prevent that, you'll need a server-side validation as well.</p>
 
@@ -78,83 +78,125 @@
 
 <p>Here you go, ready to use it. In order to minimise the overall output, we'll use the following HTML for all code snippets :</p>
 
-<pre><code>&lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;JSV Documentation&lt;/title&gt;
-    &lt;head&gt;
-    &lt;body&gt;
-        &lt;form action="/send" method="POST"&gt;
-            &lt;div&gt;
-                &lt;label for="firstname"&gt;Firstname: &lt;/label&gt;
-                &lt;input type="text" name="firstname" /&gt;
-            &lt;/div&gt;
-            &lt;div&gt;
-                &lt;label for="sex"&gt;Sex: &lt;/label&gt;
-                &lt;select name="sex"&gt;
-                    &lt;option value="M"&gt;Male&lt;/option&gt;
-                    &lt;option value="F"&gt;Female&lt;/option&gt;
-                &lt;/select&gt;
-            &lt;/div&gt;
-            &lt;div&gt;
+<div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>JSV Documentation<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"/send"</span> <span class="na">method=</span><span class="s">"POST"</span> <span class="na">id=</span><span class="s">"FormBean"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div&gt;</span>
+                <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"firstname"</span><span class="nt">&gt;</span>Firstname: <span class="nt">&lt;/label&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"firstname"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div&gt;</span>
+                <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"sex"</span><span class="nt">&gt;</span>Sex: <span class="nt">&lt;/label&gt;</span>
+                <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"sex"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"M"</span><span class="nt">&gt;</span>Male<span class="nt">&lt;/option&gt;</span>
+                    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"F"</span><span class="nt">&gt;</span>Female<span class="nt">&lt;/option&gt;</span>
+                <span class="nt">&lt;/select&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div&gt;</span>
                 Choose 2 interests:
-                &lt;label&gt;&lt;input type="checkbox" name="interest" /&gt; Sport&lt;/label&gt;
-                &lt;label&gt;&lt;input type="checkbox" name="interest" /&gt; Computer science&lt;/label&gt;
-                &lt;label&gt;&lt;input type="checkbox" name="interest" /&gt; Music&lt;/label&gt;
-            &lt;/div&gt;
-            &lt;div&gt;
-                &lt;input type="submit" value="Send" /&gt;
-            &lt;/div&gt;
-        &lt;/form&gt;
-        &lt;script type="text/javascript" src="jsv.js"&gt;&lt;/script&gt;
-        &lt;script type="text/javascript"&gt;
-            &lt;!-- Example code will be placed here --&gt;
-        &lt;/script&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"interest"</span> <span class="nt">/&gt;</span> Sport<span class="nt">&lt;/label&gt;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"interest"</span> <span class="nt">/&gt;</span> Computer science<span class="nt">&lt;/label&gt;</span>
+                <span class="nt">&lt;label&gt;&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"interest"</span> <span class="nt">/&gt;</span> Music<span class="nt">&lt;/label&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Send"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/form&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"jsv.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!--</span> <span class="nx">Example</span> <span class="nx">code</span> <span class="nx">will</span> <span class="nx">be</span> <span class="nx">placed</span> <span class="nx">here</span> <span class="o">--&gt;</span>
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
 
 <p>In this code, right after the "form" part, you can see our validation engine being imported :</p>
 
-<pre><code>&lt;script type="text/javascript" src="jsv.js"&gt;&lt;/script&gt;
-</code></pre>
+<div class="highlight highlight-html"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"jsv.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
 
 <h4>
 <a name="simple-client-side-validation" class="anchor" href="#simple-client-side-validation"><span class="octicon octicon-link"></span></a>Simple client-side validation</h4>
 
-<p>The quick example show you how to check if the 'firstname' field is not empty. That's it !</p>
+<p>The quick example shows you how to check if the 'firstname' field is not empty. That's it !</p>
 
-<pre><code>jsValidator = new JSValidator('myFormId',
-    new Array(
-        new JSValidator.Rule('firstname', 'NotNull', {'message': 'Firstname should not be empty'})
-    )
-);
-</code></pre>
+<div class="highlight highlight-html"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+    <span class="nx">jsValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JSValidator</span><span class="p">(</span><span class="s1">'myFormId'</span><span class="p">,</span>
+        <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nx">JSValidator</span><span class="p">.</span><span class="nx">Rule</span><span class="p">(</span><span class="s1">'firstname'</span><span class="p">,</span> <span class="s1">'NotNull'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'message'</span><span class="o">:</span> <span class="s1">'Firstname should not be empty'</span><span class="p">})</span>
+        <span class="p">)</span>
+    <span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
 
-<p>In this constructor, you'll need to provide the HTML form's id, and an array of Validation Rules. Those contain 3 parts :</p>
+<p>In this constructor, you'll need to provide the HTML form's id, and an array of Validation Rules. Those contain 3 parts:</p>
 
 <ul>
 <li>the name of the element they're related to</li>
 <li>the constraint name (can be whatever you want)</li>
 <li>an array of related properties (message, size, min, max, etc.), i.e. whatever extra information used in the validation process
 From now on, our validator will be available in any of our JS code using the "jsValidator" variable.</li>
+</ul><p>Since you have your validator configured, you now have to tell it when to validate each field in your form (on the submission, for instance) :</p>
+
+<div class="highlight highlight-html"><pre>jsValidator.bindValidationToElement("FormBean", "submit", true).bindFields(jsValidator.getFields());
+</pre></div>
+
+<p>That's it.
+To display the validation errors, you have 2 choices (you can use both at the same time) :</p>
+
+<ul>
+<li>Global messages : add an element in the page with id = _errors</li>
+<li>Field messages : add an element in the page with id = _error</li>
+</ul><div class="highlight highlight-html"><pre>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"FormBean_errors"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- Displays global errors --&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"ctrl-holder"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"firstname"</span><span class="nt">&gt;</span>
+            Firstname
+        <span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"firstname"</span> <span class="na">name=</span><span class="s">"firstname"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">value=</span><span class="s">""</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"firstname_error"</span> <span class="na">class=</span><span class="s">"error"</span><span class="nt">&gt;</span>
+            <span class="c">&lt;!-- Displays field errors --&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<h3>
+<a name="demos" class="anchor" href="#demos"><span class="octicon octicon-link"></span></a>Demos</h3>
+
+<ul>
+<li>Simple use of JSV_API : <a href="https://github.com/ippontech/JSV_API/tree/master/demo/html-simple-jsv">https://github.com/ippontech/JSV_API/tree/master/demo/html-simple-jsv</a>
+</li>
+<li>Event points with JSV_API : <a href="https://github.com/ippontech/JSV_API/tree/master/demo/html-full-jsv">https://github.com/ippontech/JSV_API/tree/master/demo/html-full-jsv</a>
+</li>
+<li>JSV_API with server-side Spring validation : <a href="https://github.com/ippontech/JSV_API/tree/master/demo/spring-jsr303-jsv-plugins">https://github.com/ippontech/JSV_API/tree/master/demo/spring-jsr303-jsv-plugins</a>
+</li>
 </ul><h3>
 <a name="authors" class="anchor" href="#authors"><span class="octicon octicon-link"></span></a>Authors</h3>
 
 <ul>
 <li>Project lead : <a href="https://github.com/afillatre" class="user-mention">@afillatre</a>
 </li>
-<li>First version main developer : <a href="https://github.com/kjahan" class="user-mention">@kjahan</a>
+<li>First version main developer : <a href="https://github.com/jkevan" class="user-mention">@jkevan</a>
 </li>
 </ul>
-        </section>
-
-        <footer>
-          Jsv api is maintained by <a href="https://github.com/ippontech">ippontech</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
+      </section>
     </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Jsv api : Easy and powerful form validation maintained by <a href="https://github.com/ippontech">ippontech</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
   </body>
 </html>
